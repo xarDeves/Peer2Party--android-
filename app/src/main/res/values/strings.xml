@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Peer2Party</string>
+    <string name="id">ID:  %1$s</string>
+
+</resources>
