@@ -25,6 +25,7 @@ class StartupScreen : AppCompatActivity() {
         sharedPrefs = getSharedPreferences("id", Context.MODE_PRIVATE)
         nickNameText.setText(sharedPrefs.getString("ID", ""))
 
+        //TODO push "ID" to "ChatFragment"
         connectBtn.setOnClickListener {
 
             val ID = nickNameText.text.toString()

@@ -5,8 +5,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
-import android.util.Log
-import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -44,17 +42,6 @@ class MainActivity : AppCompatActivity() {
         android.Manifest.permission.WRITE_EXTERNAL_STORAGE
     )
 
-    private fun fetchScreenDimensions() {
-        //fetching device's screen size in pixels and passing it to viewModel
-        //for image thumbnail downscale (min is necessary for orientation change):
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val height = displayMetrics.heightPixels
-        val width = displayMetrics.widthPixels
-        (viewModel as MainActivityViewModel).screenW = min(height, width)
-        (viewModel as MainActivityViewModel).screenH = max(height, width)
-    }
-
     private fun verifyStoragePermissions(activity: Activity?) {
         // Check if we have write permission
         val permission = ActivityCompat.checkSelfPermission(
@@ -70,6 +57,21 @@ class MainActivity : AppCompatActivity() {
             )
         }
     }
+
+    //this, as well as "ThumbnailMaker.kt" are most possibly deprecated
+    //since minWidth won't work on ImageView i'm keeping it for the time being
+    //(although it's not applicable anywhere as of now.)
+    private fun fetchScreenDimensions() {
+        //fetching device's screen size in pixels and passing it to viewModel
+        //for thumbnail downscale/upscale (min/max is necessary for orientation change):
+        val displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val height = displayMetrics.heightPixels
+        val width = displayMetrics.widthPixels
+        (viewModel as MainActivityViewModel).screenW = min(height, width)
+        (viewModel as MainActivityViewModel).screenH = max(height, width)
+    }
+
 
     override fun onBackPressed() {
 

@@ -1,6 +1,9 @@
 package com.cups.splashin.peer2party.viewmodels
 
 import android.app.Application
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.os.Environment
 import android.util.Log
@@ -9,7 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.cups.splashin.peer2party.data.DataBaseHolder
-import com.cups.splashin.peer2party.data.MessageDataClass
+import com.cups.splashin.peer2party.data.EntityDataClass
 import com.cups.splashin.peer2party.data.Repository
 import com.cups.splashin.peer2party.fragments.ChatFragment
 import com.cups.splashin.peer2party.fragments.PeerListFragment
@@ -57,9 +60,9 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     var peerList = mutableListOf<String>()
 
     private val repository: Repository
-    var allMessages: LiveData<List<MessageDataClass>>
+    var allMessages: LiveData<List<EntityDataClass>>
 
-    fun insertEntity(entity: MessageDataClass){
+    fun insertEntity(entity: EntityDataClass) {
         viewModelScope.launch {
             repository.insertEntity(entity)
         }
@@ -104,19 +107,23 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                         Log.d("fuck", "A")
                         val text = Reader.readText(messageByte, inputStream)
                         if (text.isNotBlank() && text.isNotEmpty()) {
-                            insertEntity(MessageDataClass(0, text, null))
+                            //auto copy to clipboard on receive:
+                            val clipboard = application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("copied", text)
+                            clipboard.primaryClip = clip
+                            insertEntity(EntityDataClass(0, text, "receive"))
                         }
                     }
                     1 -> {
                         options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
 
                         //in order to get width and height:
-                        BitmapFactory.decodeByteArray(
+                        /*BitmapFactory.decodeByteArray(
                             messageByte,
                             0,
                             messageByte.size,
                             options
-                        )
+                        )*/
 
                         val imageHeight = options!!.outHeight
                         val imageWidth = options!!.outWidth
@@ -129,13 +136,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                                 imageWidth,
                                 imageHeight
                             )
-                            Saver.saveImage(image)
-                            insertEntity(MessageDataClass(2, null, messageByte))
+                            val uri = Saver.saveImage(image)
+                            insertEntity(EntityDataClass(2, uri))
                         }
                     }
                     2 -> {
                         Saver.saveAudio(messageByte)
-                        //observableImage.postValue(entityDataClasses.last())
                     }
                     3 -> {
                         Log.d("fuck", "attempting to save video")

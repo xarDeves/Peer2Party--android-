@@ -12,26 +12,22 @@ object Sender {
 
     private lateinit var pw: PrintWriter
     private var sSend: Socket? = null
-    private var ipToConnect: String = "192.168.1.12"
+    private const val ipToConnect: String = "192.168.1.5"
 
     fun sendText(textToSend: String): Boolean {
-        if (!(textToSend.isBlank() || textToSend.isEmpty() || ipToConnect.isEmpty() || ipToConnect.isBlank())) {
-            try {
-                sSend = Socket(
-                    ipToConnect, 7000
-                )
-                pw = PrintWriter(
-                    sSend!!.getOutputStream()
-                )
+        if (!(textToSend.isBlank() || textToSend.isEmpty() || ipToConnect.isBlank() || ipToConnect.isEmpty())) {
+            return try {
+                sSend = Socket(ipToConnect, 7000)
+                pw = PrintWriter(sSend!!.getOutputStream())
                 pw.write(0)
                 pw.write(textToSend)
                 pw.flush()
                 pw.close()
                 sSend!!.close()
-                return true
+                true
             } catch (t: Throwable) {
                 t.printStackTrace()
-                return false
+                false
             }
         } else {
             return false

@@ -18,21 +18,13 @@ fun makeThumbnail(
     val scaleY: Double = screenH.toDouble() / imageHeight
     val scale = min(scaleX, scaleY)
 
-    if (imageWidth >= screenW / 2) {
-        //for downscale:
-        imageWidth = (imageWidth * scale / 1.5).toInt()
-        imageHeight = (imageHeight * scale / 1.5).toInt()
-        image = Bitmap.createScaledBitmap(
-            image, imageWidth, imageHeight, false
-        )
-    } else if (imageWidth < screenW / 2) {
+
         //for upscale:
         imageWidth = (imageWidth / 1.5 * scale).toInt()
         imageHeight = (imageHeight / 1.5 * scale).toInt()
         image = Bitmap.createScaledBitmap(
             image, imageWidth, imageHeight, false
         )
-    }
 
     return image
 }

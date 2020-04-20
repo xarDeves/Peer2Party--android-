@@ -2,7 +2,6 @@ package com.cups.splashin.peer2party.functionality
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import com.cups.splashin.peer2party.data.MessageDataClass
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader

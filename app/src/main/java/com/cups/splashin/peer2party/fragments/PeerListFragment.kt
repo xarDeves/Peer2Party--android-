@@ -9,9 +9,9 @@ import android.widget.ListView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.cups.splashin.peer2party.R
-import com.cups.splashin.peer2party.data.Repository
 import com.cups.splashin.peer2party.viewmodels.MainActivityViewModel
 
+//TODO fetch clicked users
 class PeerListFragment : Fragment() {
 
     private lateinit var viewModel: MainActivityViewModel

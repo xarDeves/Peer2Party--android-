@@ -4,11 +4,11 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "message")
-class MessageDataClass(
+data class EntityDataClass(
 
     var layoutRes: Int,
-    var text: String?,
-    var bytes: ByteArray?
+    var payload: String?,
+    var alias: String? = null
 
 ) {
     @PrimaryKey(autoGenerate = true)

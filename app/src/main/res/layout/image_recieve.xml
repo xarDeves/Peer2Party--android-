@@ -1,22 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/chatImage"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearRecieved"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="start"
     android:layout_marginStart="7dp"
     android:layout_marginTop="5dp"
-    android:layout_marginEnd="7dp"
-    android:layout_marginBottom="5dp"
-    android:background="@drawable/chat_bubble"
-    android:backgroundTint="@color/recieveClr"
-    android:paddingStart="7dp"
-    android:paddingTop="7dp"
-    android:paddingEnd="7dp"
-    android:paddingBottom="7dp"
-    android:textColor="#FFF"
-    android:textSize="20sp" />
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linearUsernameReceived"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/userTextImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/username"
+            android:backgroundTint="@color/secondary"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:textColor="#FFF"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearTextReceived"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageViewReceived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@drawable/received_bubble"
+            android:backgroundTint="@color/recieveClr"
+            android:maxWidth="280dp"
+            android:maxHeight="400dp"
+            android:padding="5dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
+
 
 
 

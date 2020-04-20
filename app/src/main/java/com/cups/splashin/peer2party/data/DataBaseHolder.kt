@@ -7,8 +7,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [MessageDataClass::class], version = 1, exportSchema = false)
-//@TypeConverters(DataConverter::class)
+@Database(entities = [EntityDataClass::class], version = 1, exportSchema = false)
 abstract class DataBaseHolder : RoomDatabase() {
 
     abstract fun dao(): DbDao

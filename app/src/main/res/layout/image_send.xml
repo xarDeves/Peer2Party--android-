@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearRecieved"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">-->
+    android:layout_height="wrap_content"
+    android:layout_gravity="end"
+    android:layout_marginTop="5dp"
+    android:layout_marginEnd="7dp"
+    android:orientation="vertical">
 
-    <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
-
-        android:id="@+id/chatImage"
+    <ImageView
+        android:id="@+id/imageViewSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/chat_bubble"
+        android:adjustViewBounds="true"
+        android:background="@drawable/sent_bubble"
         android:backgroundTint="@color/sendClr"
-        android:paddingStart="7dp"
-        android:paddingTop="7dp"
-        android:paddingEnd="7dp"
-        android:paddingBottom="7dp"
-        android:textColor="#FFF"
-        android:textSize="20sp"/>
-<!--        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"-->
+        android:maxWidth="280dp"
+        android:maxHeight="400dp"
+        android:padding="5dp" />
 
+</LinearLayout>
 
-<!--
-</androidx.constraintlayout.widget.ConstraintLayout>-->

@@ -1,25 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-
-    android:id="@+id/chatText"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/linearRecieved"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="start"
     android:layout_marginStart="7dp"
     android:layout_marginTop="5dp"
-    android:layout_marginEnd="7dp"
-    android:layout_marginBottom="5dp"
-    android:background="@drawable/chat_bubble"
-    android:backgroundTint="@color/recieveClr"
-    android:clickable="true"
-    android:paddingStart="7dp"
-    android:paddingTop="7dp"
-    android:paddingEnd="7dp"
-    android:paddingBottom="7dp"
-    android:textColor="#FFF"
-    android:textSize="20sp" />
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <LinearLayout
+            android:id="@+id/linearUsernameReceived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/userText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/username"
+                android:backgroundTint="@color/secondary"
+                android:paddingStart="7dp"
+                android:paddingEnd="7dp"
+                android:text="asdasd"
+                android:textColor="#FFF"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearTextReceived"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/chatTextRec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/received_bubble"
+                android:backgroundTint="@color/recieveClr"
+                android:maxWidth="280dp"
+                android:padding="5dp"
+                android:text="afsdgdasfgsdfgsdfg"
+                android:textColor="#FFF"
+                android:textSize="20sp" />
+
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/delete_sprite"
+                android:visibility="gone">
+
+            </ImageView>
+
+        </LinearLayout>
+    </TableLayout>
+</LinearLayout>
+
 
 
 

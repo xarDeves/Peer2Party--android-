@@ -51,18 +51,20 @@ object Saver {
 
     }
 
-    fun saveImage(image: Bitmap) {
+    fun saveImage(image: Bitmap): String {
 
         currentTime = SimpleDateFormat("yyyyMMdd_hhmmss", Locale.getDefault())
         timeString = currentTime.format(System.currentTimeMillis()).toString()
         val path = Environment.getExternalStorageDirectory().absolutePath
         val dir = File("$path/DCIM/")
         dir.mkdirs()
-        val file = File(dir, "$currentTime.jpg")
+        val file = File(dir, "$timeString.jpg")
         val fos = FileOutputStream(file)
         image.compress(Bitmap.CompressFormat.PNG, 100, fos)
         fos.flush()
         fos.close()
+
+        return file.absolutePath
 
     }
 }

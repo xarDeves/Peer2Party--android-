@@ -9,9 +9,12 @@ import androidx.room.Query
 interface DbDao {
 
     @Insert
-    suspend fun insert(message: MessageDataClass)
+    suspend fun insert(entity: EntityDataClass)
 
     @Query("Select * from message")
-    fun getAllMessages(): LiveData<List<MessageDataClass>>
+    fun getAllMessages(): LiveData<List<EntityDataClass>>
+
+    @Query("DELETE FROM message WHERE `key` = :position")
+    fun delete(position: Int)
 
 }
