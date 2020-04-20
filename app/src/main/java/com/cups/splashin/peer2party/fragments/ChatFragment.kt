@@ -186,6 +186,11 @@ class ChatFragment : Fragment() {
             layoutManager.scrollToPosition(it.size - 1)
         })
 
+        /*chatAdapter.setScreenDimensions(
+            (viewModel as MainActivityViewModel).screenW!!,
+            (viewModel as MainActivityViewModel).screenH!!
+        )*/
+
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             recipientsBtn.visibility = View.GONE

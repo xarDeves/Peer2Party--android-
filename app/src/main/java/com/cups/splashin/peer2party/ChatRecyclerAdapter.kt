@@ -39,6 +39,15 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
     private val RECEIVE_IMAGE = 2
     private val SEND_IMAGE = 3
 
+    /*private var screenW: Int? = null
+    private var screenH: Int? = null
+
+    internal fun setScreenDimensions(width: Int, height: Int) {
+
+        this.screenW = width
+        this.screenH = height
+    }*/
+
     //goto to MainActivityViewModel and ChatFragment for the observable
     //(chain of events backtracks to "DbDao" -> "Repository")
     internal fun setMessages(entities: List<EntityDataClass>) {
@@ -200,11 +209,11 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                 uri = allMessages[position].payload!!
                 file = File(uri)
                 if (file.exists()) {
-                    //(holder as ImageReceivedViewHolder).imageView.setImageURI(Uri.parse(uri))
+                    //(holder as ImageReceivedViewHolder).imageView.setImageBitmap(makeThumbnail(screenW!!, screenH!!, Uri.parse(uri)))
                     Glide.with(context)
                         .load(uri)
+                        .override(600, 600)
                         .fitCenter()
-                        .thumbnail(0.8f)
                         .dontAnimate()
                         .dontTransform()
                         .into((holder as ImageReceivedViewHolder).imageView)
