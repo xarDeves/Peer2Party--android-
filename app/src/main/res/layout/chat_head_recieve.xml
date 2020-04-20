@@ -9,59 +9,65 @@
     android:layout_marginTop="5dp"
     android:orientation="vertical">
 
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/linearUsernameReceived"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-
-        <LinearLayout
-            android:id="@+id/linearUsernameReceived"
+        <TextView
+            android:id="@+id/userText"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/username"
+            android:backgroundTint="@color/secondary"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:text="asdasd"
+            android:textColor="#FFF"
+            android:textSize="12sp" />
 
-            <TextView
-                android:id="@+id/userText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/username"
-                android:backgroundTint="@color/secondary"
-                android:paddingStart="7dp"
-                android:paddingEnd="7dp"
-                android:text="asdasd"
-                android:textColor="#FFF"
-                android:textSize="12sp" />
+    </LinearLayout>
 
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearTextReceived"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:id="@+id/linearTextReceived"
+        <TextView
+            android:id="@+id/chatTextRec"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/received_bubble"
+            android:backgroundTint="@color/recieveClr"
+            android:maxWidth="280dp"
+            android:padding="5dp"
+            android:textColor="#FFF"
+            android:textSize="20sp" />
 
-            <TextView
-                android:id="@+id/chatTextRec"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/received_bubble"
-                android:backgroundTint="@color/recieveClr"
-                android:maxWidth="280dp"
-                android:padding="5dp"
-                android:text="afsdgdasfgsdfgsdfg"
-                android:textColor="#FFF"
-                android:textSize="20sp" />
+        <ImageView
+            android:id="@+id/deleteChatRec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/delete_sprite"
+            android:visibility="gone" />
+    </LinearLayout>
 
-            <ImageView
-                android:id="@+id/delete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/delete_sprite"
-                android:visibility="gone">
+    <LinearLayout
+        android:id="@+id/infoChatRec"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
-            </ImageView>
+        <TextView
+            android:id="@+id/dateChatRec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="280dp"
+            android:text="12/5/2021 at 15:53pm, "
+            android:textSize="12sp" />
 
-        </LinearLayout>
-    </TableLayout>
+    </LinearLayout>
 </LinearLayout>
 
 

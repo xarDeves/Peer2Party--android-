@@ -8,7 +8,9 @@ data class EntityDataClass(
 
     var layoutRes: Int,
     var payload: String?,
-    var alias: String? = null
+    var alias: String? = null,
+    var date: String? = null,
+    var size: String? = null
 
 ) {
     @PrimaryKey(autoGenerate = true)

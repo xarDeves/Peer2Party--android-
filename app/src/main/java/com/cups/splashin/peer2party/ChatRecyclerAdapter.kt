@@ -10,9 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.bumptech.glide.Glide
 import com.cups.splashin.peer2party.data.DataBaseHolder
 import com.cups.splashin.peer2party.data.EntityDataClass
 import java.io.File
@@ -66,7 +68,11 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
     class ImageReceivedViewHolder(
         view: View,
         val imageView: ImageView = view.findViewById(R.id.imageViewReceived),
-        val alias: TextView = view.findViewById(R.id.userTextImage)
+        val alias: TextView = view.findViewById(R.id.userTextImage),
+        val delete: ImageView = view.findViewById(R.id.deleteImageRec),
+        val info: LinearLayout = view.findViewById(R.id.infoImageRec),
+        val date: TextView = view.findViewById(R.id.dateImageRec),
+        val size: TextView = view.findViewById(R.id.sizeImageRec)
     ) : RecyclerView.ViewHolder(view)
 
 
@@ -79,7 +85,9 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
         view: View,
         val textView: TextView = view.findViewById(R.id.chatTextRec),
         val alias: TextView = view.findViewById(R.id.userText),
-        val delete: ImageView = view.findViewById(R.id.delete)
+        val delete: ImageView = view.findViewById(R.id.deleteChatRec),
+        val info: LinearLayout = view.findViewById(R.id.infoChatRec),
+        val date: TextView = view.findViewById(R.id.dateChatRec)
     ) : RecyclerView.ViewHolder(view)
 
 
@@ -138,6 +146,7 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                 holder.alias.text = context.getString(
                     R.string.username, allMessages[position].alias
                 )
+                holder.date.text = allMessages[position].date
 
                 holder.delete.setOnClickListener {
 
@@ -155,11 +164,14 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                 //copy text to clipboard:
                 holder.itemView.setOnClickListener {
 
+                    println(allMessages[position].date)
+
                     clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     clip = ClipData.newPlainText("copied", holder.textView.text)
                     clipboard.primaryClip = clip
 
                     holder.delete.visibility = View.VISIBLE
+                    holder.info.visibility = View.VISIBLE
                 }
 
                 /*if (!clicked) {
@@ -188,12 +200,41 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                 uri = allMessages[position].payload!!
                 file = File(uri)
                 if (file.exists()) {
-                    (holder as ImageReceivedViewHolder).imageView.setImageURI(Uri.parse(uri))
+                    //(holder as ImageReceivedViewHolder).imageView.setImageURI(Uri.parse(uri))
+                    Glide.with(context)
+                        .load(uri)
+                        .fitCenter()
+                        .thumbnail(0.8f)
+                        .dontAnimate()
+                        .dontTransform()
+                        .into((holder as ImageReceivedViewHolder).imageView)
                 } else {
                     (holder as ImageReceivedViewHolder).imageView.setImageResource(R.drawable.not_found)
                 }
                 holder.alias.text =
                     context.getString(R.string.username, allMessages[position].alias)
+                holder.date.text = allMessages[position].date
+                holder.size.text = allMessages[position].size
+
+                holder.delete.setOnClickListener {
+
+                    //holder.delete.visibility = View.GONE
+
+                    val dao = DataBaseHolder.getInstance(context).dao()
+
+                    val dbOperation = Thread { dao.delete(allMessages[position].key!!) }
+                    dbOperation.start()
+                    dbOperation.join()
+
+                }
+
+                //copy text to clipboard:
+                holder.itemView.setOnClickListener {
+
+                    holder.delete.visibility = View.VISIBLE
+                    holder.info.visibility = View.VISIBLE
+                }
+
             }
 
             SEND_IMAGE -> {

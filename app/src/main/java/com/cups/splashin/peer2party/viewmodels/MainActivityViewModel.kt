@@ -14,6 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.cups.splashin.peer2party.data.DataBaseHolder
 import com.cups.splashin.peer2party.data.EntityDataClass
 import com.cups.splashin.peer2party.data.Repository
+import com.cups.splashin.peer2party.fetchDateTime
 import com.cups.splashin.peer2party.fragments.ChatFragment
 import com.cups.splashin.peer2party.fragments.PeerListFragment
 import com.cups.splashin.peer2party.functionality.Reader
@@ -107,11 +108,14 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                         Log.d("fuck", "A")
                         val text = Reader.readText(messageByte, inputStream)
                         if (text.isNotBlank() && text.isNotEmpty()) {
-                            //auto copy to clipboard on receive:
-                            val clipboard = application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            //auto copy to clipboard on receive (i just want to check something):
+                            val clipboard =
+                                application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val clip = ClipData.newPlainText("copied", text)
                             clipboard.primaryClip = clip
-                            insertEntity(EntityDataClass(0, text, "receive"))
+                            insertEntity(EntityDataClass(0, text, "receiveText",
+                                fetchDateTime()
+                            ))
                         }
                     }
                     1 -> {
@@ -137,7 +141,18 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                                 imageHeight
                             )
                             val uri = Saver.saveImage(image)
-                            insertEntity(EntityDataClass(2, uri))
+                            insertEntity(
+                                EntityDataClass(
+                                    2,
+                                    uri,
+                                    "receiveImage",
+                                    fetchDateTime(),
+                                    android.text.format.Formatter.formatFileSize(
+                                        application,
+                                        messageByte.size.toLong()
+                                    )
+                                )
+                            )
                         }
                     }
                     2 -> {
