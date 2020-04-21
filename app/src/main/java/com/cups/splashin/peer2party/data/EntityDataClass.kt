@@ -10,7 +10,8 @@ data class EntityDataClass(
     var payload: String?,
     var alias: String? = null,
     var date: String? = null,
-    var size: String? = null
+    var size: String? = null,
+    var clicked: Boolean = false
 
 ) {
     @PrimaryKey(autoGenerate = true)

@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
 import android.net.Uri
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -32,6 +31,7 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
     private lateinit var uri: String
 
     private var allMessages = emptyList<EntityDataClass>()
+    //private var clicked: MutableList<Boolean> = mutableListOf()
 
     private var messageArraySize: Int? = null
     private val RECEIVE_TEXT = 0
@@ -54,6 +54,8 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
 
         this.allMessages = entities
         this.messageArraySize = this.allMessages.size
+        //this.clicked.add(false)
+
         notifyDataSetChanged()
     }
 
@@ -68,13 +70,13 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
     }
 
 
-    //TODO implement delete functionality for all ViewHolders + delete from disk
+    //TODO implement delete functionality for all ViewHolders
     class ImageSendViewHolder(
         view: View,
         val imageView: ImageView = view.findViewById(R.id.imageViewSend)
     ) : RecyclerView.ViewHolder(view)
 
-    class ImageReceivedViewHolder(
+    inner class ImageReceivedViewHolder(
         view: View,
         val imageView: ImageView = view.findViewById(R.id.imageViewReceived),
         val alias: TextView = view.findViewById(R.id.userTextImage),
@@ -82,7 +84,20 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
         val info: LinearLayout = view.findViewById(R.id.infoImageRec),
         val date: TextView = view.findViewById(R.id.dateImageRec),
         val size: TextView = view.findViewById(R.id.sizeImageRec)
-    ) : RecyclerView.ViewHolder(view)
+    ) : RecyclerView.ViewHolder(view) /*{
+        init {
+
+            if (clicked[adapterPosition + 1]) {
+                delete.visibility = View.VISIBLE
+                info.visibility = View.VISIBLE
+                //clicked[position] = false
+            } else {
+                delete.visibility = View.GONE
+                info.visibility = View.GONE
+                //clicked[position] = true
+            }
+        }
+    }*/
 
 
     class TextSendViewHolder(
@@ -104,51 +119,34 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
 
         when (viewType) {
             RECEIVE_TEXT -> {
-                Log.d("fuck", "RECEIVE_TEXT")
-                view = inflater
-                    .inflate(R.layout.chat_head_recieve, parent, false)
+                view = inflater.inflate(R.layout.chat_head_recieve, parent, false)
                 viewHolder =
-                    TextReceivedViewHolder(
-                        view
-                    )
+                    TextReceivedViewHolder(view)
 
             }
             SEND_TEXT -> {
-                Log.d("fuck", "SEND_TEXT")
-                view = inflater
-                    .inflate(R.layout.chat_head_send, parent, false)
+                view = inflater.inflate(R.layout.chat_head_send, parent, false)
                 viewHolder =
-                    TextSendViewHolder(
-                        view
-                    )
+                    TextSendViewHolder(view)
 
             }
             RECEIVE_IMAGE -> {
-                Log.d("fuck", "RECEIVE_IMAGE")
-                view = inflater
-                    .inflate(R.layout.image_recieve, parent, false)
+                view = inflater.inflate(R.layout.image_recieve, parent, false)
                 viewHolder =
-                    ImageReceivedViewHolder(
-                        view
-                    )
+                    ImageReceivedViewHolder(view)
             }
             SEND_IMAGE -> {
-                Log.d("fuck", "SEND_IMAGE")
-                view = inflater
-                    .inflate(R.layout.image_send, parent, false)
-                viewHolder =
-                    ImageSendViewHolder(
-                        view
-                    )
-
+                view = inflater.inflate(R.layout.image_send, parent, false)
+                viewHolder = ImageSendViewHolder(view)
             }
         }
 
         return viewHolder
     }
 
-    //TODO fix "delete_sprite" visibility bugs
+    //TODO fix visibility bugs
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+
         when (holder.itemViewType) {
             RECEIVE_TEXT -> {
                 (holder as TextReceivedViewHolder).textView.text = allMessages[position].payload
@@ -173,8 +171,6 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                 //copy text to clipboard:
                 holder.itemView.setOnClickListener {
 
-                    println(allMessages[position].date)
-
                     clipboard = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
                     clip = ClipData.newPlainText("copied", holder.textView.text)
                     clipboard.primaryClip = clip
@@ -182,14 +178,6 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                     holder.delete.visibility = View.VISIBLE
                     holder.info.visibility = View.VISIBLE
                 }
-
-                /*if (!clicked) {
-                    holder.delete.visibility = View.VISIBLE
-                    clicked = true
-                } else {
-                    holder.delete.visibility = View.GONE
-                    clicked = false
-                }*/
 
                 //hiding username if the same user sends multiple message at once (guess what. It doesn't work):
                 /*if (messageArraySize!! > 1) {
@@ -206,13 +194,14 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
             //goto OnActivityResult in ChatFragment, algorithm works only for fetching an image's
             //true path.
             RECEIVE_IMAGE -> {
+
                 uri = allMessages[position].payload!!
                 file = File(uri)
                 if (file.exists()) {
                     //(holder as ImageReceivedViewHolder).imageView.setImageBitmap(makeThumbnail(screenW!!, screenH!!, Uri.parse(uri)))
                     Glide.with(context)
                         .load(uri)
-                        .override(600, 600)
+                        .override(500, 500)
                         .fitCenter()
                         .dontAnimate()
                         .dontTransform()
@@ -225,9 +214,15 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                 holder.date.text = allMessages[position].date
                 holder.size.text = allMessages[position].size
 
-                holder.delete.setOnClickListener {
+                if (allMessages[position].clicked) {
+                    holder.delete.visibility = View.VISIBLE
+                    holder.info.visibility = View.VISIBLE
+                } else {
+                    holder.delete.visibility = View.GONE
+                    holder.info.visibility = View.GONE
+                }
 
-                    //holder.delete.visibility = View.GONE
+                holder.delete.setOnClickListener {
 
                     val dao = DataBaseHolder.getInstance(context).dao()
 
@@ -235,13 +230,34 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                     dbOperation.start()
                     dbOperation.join()
 
+                    notifyItemRemoved(position)
+
                 }
 
-                //copy text to clipboard:
                 holder.itemView.setOnClickListener {
 
-                    holder.delete.visibility = View.VISIBLE
-                    holder.info.visibility = View.VISIBLE
+                    val dao = DataBaseHolder.getInstance(context).dao()
+
+                    if (allMessages[position].clicked) {
+                        holder.delete.visibility = View.GONE
+                        holder.info.visibility = View.GONE
+                        val dbOperation =
+                            Thread { dao.updateChecked(false, allMessages[position].key!!) }
+                        dbOperation.start()
+                        dbOperation.join()
+                    } else {
+                        holder.delete.visibility = View.VISIBLE
+                        holder.info.visibility = View.VISIBLE
+                        val dbOperation =
+                            Thread { dao.updateChecked(true, allMessages[position].key!!) }
+                        dbOperation.start()
+                        dbOperation.join()
+                    }
+
+                    //notifyItemChanged(position)
+
+                    //holder.info.visibility = View.VISIBLE
+                    //holder.delete.visibility = View.VISIBLE
                 }
 
             }

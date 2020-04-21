@@ -17,4 +17,7 @@ interface DbDao {
     @Query("DELETE FROM message WHERE `key` = :position")
     fun delete(position: Int)
 
+    @Query("UPDATE message SET clicked = :isClicked WHERE `key` = :position")
+    fun updateChecked(isClicked: Boolean, position: Int)
+
 }
