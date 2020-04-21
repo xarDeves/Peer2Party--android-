@@ -257,8 +257,9 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
 
                 uri = allMessages[position].payload!!
                 file = File(uri)
+
                 if (file.exists()) {
-                    //(holder as ImageReceivedViewHolder).imageView.setImageBitmap(makeThumbnail(screenW!!, screenH!!, Uri.parse(uri)))
+
                     Glide.with(context)
                         .load(uri)
                         .override(500, 500)
@@ -267,48 +268,6 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                         .dontTransform()
                         .into((holder as ImageReceivedViewHolder).imageView)
 
-                    holder.size.text = allMessages[position].size
-
-                    if (allMessages[position].clicked) {
-                        holder.delete.visibility = View.VISIBLE
-                        holder.info.visibility = View.VISIBLE
-                    } else {
-                        holder.delete.visibility = View.GONE
-                        holder.info.visibility = View.GONE
-                    }
-
-                    holder.delete.setOnClickListener {
-
-                        val dao = DataBaseHolder.getInstance(context).dao()
-
-                        val dbOperation = Thread { dao.delete(allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
-
-                        notifyItemRemoved(position)
-
-                    }
-
-                    holder.itemView.setOnClickListener {
-
-                        val dao = DataBaseHolder.getInstance(context).dao()
-
-                        if (allMessages[position].clicked) {
-                            holder.delete.visibility = View.GONE
-                            holder.info.visibility = View.GONE
-                            val dbOperation =
-                                Thread { dao.updateChecked(false, allMessages[position].key!!) }
-                            dbOperation.start()
-                            dbOperation.join()
-                        } else {
-                            holder.delete.visibility = View.VISIBLE
-                            holder.info.visibility = View.VISIBLE
-                            val dbOperation =
-                                Thread { dao.updateChecked(true, allMessages[position].key!!) }
-                            dbOperation.start()
-                            dbOperation.join()
-                        }
-                    }
                 } else {
                     (holder as ImageReceivedViewHolder).imageView.setImageResource(R.drawable.not_found)
                 }
@@ -316,6 +275,48 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                 holder.alias.text =
                     context.getString(R.string.username, allMessages[position].alias)
                 holder.date.text = allMessages[position].date
+                holder.size.text = allMessages[position].size
+
+                if (allMessages[position].clicked) {
+                    holder.delete.visibility = View.VISIBLE
+                    holder.info.visibility = View.VISIBLE
+                } else {
+                    holder.delete.visibility = View.GONE
+                    holder.info.visibility = View.GONE
+                }
+
+                holder.delete.setOnClickListener {
+
+                    val dao = DataBaseHolder.getInstance(context).dao()
+
+                    val dbOperation = Thread { dao.delete(allMessages[position].key!!) }
+                    dbOperation.start()
+                    dbOperation.join()
+
+                    notifyItemRemoved(position)
+
+                }
+
+                holder.itemView.setOnClickListener {
+
+                    val dao = DataBaseHolder.getInstance(context).dao()
+
+                    if (allMessages[position].clicked) {
+                        holder.delete.visibility = View.GONE
+                        holder.info.visibility = View.GONE
+                        val dbOperation =
+                            Thread { dao.updateChecked(false, allMessages[position].key!!) }
+                        dbOperation.start()
+                        dbOperation.join()
+                    } else {
+                        holder.delete.visibility = View.VISIBLE
+                        holder.info.visibility = View.VISIBLE
+                        val dbOperation =
+                            Thread { dao.updateChecked(true, allMessages[position].key!!) }
+                        dbOperation.start()
+                        dbOperation.join()
+                    }
+                }
 
             }
 
@@ -324,7 +325,9 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                 //(holder as ImageSendViewHolder).imageView.setImageURI(Uri.parse((allMessages[position].payload)))
                 uri = allMessages[position].payload!!
                 file = File(uri)
+
                 if (file.absoluteFile.exists()) {
+
                     Glide.with(context)
                         .load(uri)
                         .override(500, 500)
@@ -332,55 +335,54 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                         .dontAnimate()
                         .dontTransform()
                         .into((holder as ImageSendViewHolder).imageView)
-
-                    holder.size.text = allMessages[position].size
-
-                    if (allMessages[position].clicked) {
-                        holder.delete.visibility = View.VISIBLE
-                        holder.info.visibility = View.VISIBLE
-                    } else {
-                        holder.delete.visibility = View.GONE
-                        holder.info.visibility = View.GONE
-                    }
-
-                    holder.delete.setOnClickListener {
-
-                        val dao = DataBaseHolder.getInstance(context).dao()
-
-                        val dbOperation = Thread { dao.delete(allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
-
-                        notifyItemRemoved(position)
-
-                    }
-
-                    holder.itemView.setOnClickListener {
-
-                        val dao = DataBaseHolder.getInstance(context).dao()
-
-                        if (allMessages[position].clicked) {
-                            holder.delete.visibility = View.GONE
-                            holder.info.visibility = View.GONE
-                            val dbOperation =
-                                Thread { dao.updateChecked(false, allMessages[position].key!!) }
-                            dbOperation.start()
-                            dbOperation.join()
-                        } else {
-                            holder.delete.visibility = View.VISIBLE
-                            holder.info.visibility = View.VISIBLE
-                            val dbOperation =
-                                Thread { dao.updateChecked(true, allMessages[position].key!!) }
-                            dbOperation.start()
-                            dbOperation.join()
-                        }
-                    }
-
                 } else {
                     (holder as ImageSendViewHolder).imageView.setImageResource(R.drawable.not_found)
                 }
 
                 holder.date.text = allMessages[position].date
+                holder.size.text = allMessages[position].size
+
+                if (allMessages[position].clicked) {
+                    holder.delete.visibility = View.VISIBLE
+                    holder.info.visibility = View.VISIBLE
+                } else {
+                    holder.delete.visibility = View.GONE
+                    holder.info.visibility = View.GONE
+                }
+
+                holder.delete.setOnClickListener {
+
+                    val dao = DataBaseHolder.getInstance(context).dao()
+
+                    val dbOperation = Thread { dao.delete(allMessages[position].key!!) }
+                    dbOperation.start()
+                    dbOperation.join()
+
+                    notifyItemRemoved(position)
+
+                }
+
+                holder.itemView.setOnClickListener {
+
+                    val dao = DataBaseHolder.getInstance(context).dao()
+
+                    if (allMessages[position].clicked) {
+                        holder.delete.visibility = View.GONE
+                        holder.info.visibility = View.GONE
+                        val dbOperation =
+                            Thread { dao.updateChecked(false, allMessages[position].key!!) }
+                        dbOperation.start()
+                        dbOperation.join()
+                    } else {
+                        holder.delete.visibility = View.VISIBLE
+                        holder.info.visibility = View.VISIBLE
+                        val dbOperation =
+                            Thread { dao.updateChecked(true, allMessages[position].key!!) }
+                        dbOperation.start()
+                        dbOperation.join()
+                    }
+                }
+
 
             }
         }
