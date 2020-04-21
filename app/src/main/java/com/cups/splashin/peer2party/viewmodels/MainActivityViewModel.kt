@@ -113,9 +113,14 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                                 application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                             val clip = ClipData.newPlainText("copied", text)
                             clipboard.primaryClip = clip
-                            insertEntity(EntityDataClass(0, text, "receiveText",
-                                fetchDateTime()
-                            ))
+                            insertEntity(
+                                EntityDataClass(
+                                    0,
+                                    text,
+                                    fetchDateTime(),
+                                    "receiveText"
+                                )
+                            )
                         }
                     }
                     1 -> {
@@ -145,8 +150,8 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                                 EntityDataClass(
                                     2,
                                     uri,
-                                    "receiveImage",
                                     fetchDateTime(),
+                                    "receiveImage",
                                     android.text.format.Formatter.formatFileSize(
                                         application,
                                         messageByte.size.toLong()

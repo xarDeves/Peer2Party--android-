@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.cups.splashin.peer2party.ChatRecyclerAdapter
 import com.cups.splashin.peer2party.R
 import com.cups.splashin.peer2party.data.EntityDataClass
+import com.cups.splashin.peer2party.fetchDateTime
 import com.cups.splashin.peer2party.functionality.Sender
 import com.cups.splashin.peer2party.viewmodels.MainActivityViewModel
 import java.io.InputStream
@@ -55,7 +56,7 @@ class ChatFragment : Fragment() {
         Thread {
             if (Sender.sendText(textToSend)) {
                 (viewModel as MainActivityViewModel).insertEntity(
-                    EntityDataClass(1, textToSend, "send")
+                    EntityDataClass(1, textToSend, fetchDateTime())
                 )
                 activity?.runOnUiThread {
                     textEntry.text = ""
@@ -71,14 +72,22 @@ class ChatFragment : Fragment() {
 
     private fun initImageSend(path: String) {
 
-        val decodedImage = BitmapFactory.decodeStream(explorerStream)
-        (viewModel as MainActivityViewModel).insertEntity(
-            EntityDataClass(3, path)
-        )
-
         Thread {
-            Sender.sendImage(decodedImage)
+            val size = Sender.sendImage(BitmapFactory.decodeStream(explorerStream))
+            (viewModel as MainActivityViewModel).insertEntity(
+                EntityDataClass(
+                    3,
+                    path,
+                    fetchDateTime(),
+                    null,
+                    android.text.format.Formatter.formatFileSize(
+                        activity!!,
+                        size.toLong()
+                    )
+                )
+            )
         }.start()
+
 
         /*Thread {
             //create thumbnail, display it and keep a copy for screen rotation purposes:

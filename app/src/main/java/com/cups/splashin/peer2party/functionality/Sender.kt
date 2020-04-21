@@ -34,12 +34,14 @@ object Sender {
         }
     }
 
-    fun sendImage(image: Bitmap) {
+    fun sendImage(image: Bitmap): Int {
+
+        val baos = ByteArrayOutputStream()
+        image.compress(Bitmap.CompressFormat.PNG, 0, baos)
+        val imageByte = baos.toByteArray()
 
         try {
-            val baos = ByteArrayOutputStream()
-            image.compress(Bitmap.CompressFormat.PNG, 0, baos)
-            val imageByte = baos.toByteArray()
+
             sSend = Socket(ipToConnect, 7000)
             val os = sSend!!.getOutputStream()
             val dos = DataOutputStream(os)
@@ -52,6 +54,9 @@ object Sender {
         } catch (t: Throwable) {
             t.printStackTrace()
         }
+
+        return imageByte.size
+
     }
 
     fun sendAudio(inputStream1: Int, inputStream: InputStream) {
