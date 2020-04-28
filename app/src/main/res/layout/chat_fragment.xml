@@ -26,7 +26,6 @@
                 android:text="@string/id"
                 android:textSize="27sp" />
 
-
             <Button
                 android:id="@+id/recipients"
                 android:layout_width="match_parent"
@@ -40,33 +39,58 @@
 
     </TableLayout>
 
-    <!--    <ScrollView
-            android:id="@+id/chatScroll"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/tableLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/holderLayout">
-
-            <LinearLayout
-                android:id="@+id/chatHeadHolder"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="bottom"
-                android:orientation="vertical" />
-
-        </ScrollView>-->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-
         app:layout_constraintBottom_toTopOf="@+id/tableLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/holderLayout" />
+
+    <TableLayout
+        android:id="@+id/selectCaptureMode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/button_rounded_corners"
+        android:backgroundTint="@color/secondary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/recycler"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TableRow>
+
+            <Button
+                android:id="@+id/openImage"
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
+                android:background="@null"
+                android:paddingStart="8dp"
+                android:text="Image"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp" />
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="26dp"
+                android:layout_gravity="center_vertical"
+                android:background="#FFFFFF" />
+
+            <Button
+                android:id="@+id/openVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="33dp"
+                android:background="@null"
+                android:paddingEnd="8dp"
+                android:text="Video"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp" />
+
+        </TableRow>
+    </TableLayout>
 
 
     <TableLayout
@@ -85,6 +109,12 @@
                 android:layout_height="44dp"
                 android:background="@drawable/attachment_sprite"
                 android:rotation="45" />
+
+            <Button
+                android:id="@+id/openCapture"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/camera_sprite" />
 
             <EditText
                 android:id="@+id/textInput"

@@ -14,12 +14,18 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.cups.splashin.peer2party.data.DataBaseHolder
+import com.cups.splashin.peer2party.data.DbDao
 import com.cups.splashin.peer2party.data.EntityDataClass
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 import java.io.File
 
 
-class ChatRecyclerAdapter internal constructor(private val context: Context) :
-    RecyclerView.Adapter<ViewHolder>() {
+class ChatRecyclerAdapter internal constructor(
+    private val context: Context,
+    private val dao: DbDao = DataBaseHolder.getInstance(context).dao()
+) : RecyclerView.Adapter<ViewHolder>() {
 
     private lateinit var file: File
     private val inflater: LayoutInflater = LayoutInflater.from(context)
@@ -30,9 +36,10 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
     private lateinit var uri: String
 
     private var allMessages = emptyList<EntityDataClass>()
+    //TODO remove "clicked" from DB and persist on runtime only
     //private var clicked: MutableList<Boolean> = mutableListOf()
 
-    private var messageArraySize: Int? = null
+    //private var messageArraySize: Int? = null
     private val RECEIVE_TEXT = 0
     private val SEND_TEXT = 1
     private val RECEIVE_IMAGE = 2
@@ -45,7 +52,6 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
         val info: LinearLayout = view.findViewById(R.id.infoChatSend),
         val date: TextView = view.findViewById(R.id.dateChatSend)
     ) : RecyclerView.ViewHolder(view)
-
 
     class TextReceivedViewHolder(
         view: View,
@@ -89,8 +95,7 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
     internal fun setMessages(entities: List<EntityDataClass>) {
 
         this.allMessages = entities
-        this.messageArraySize = this.allMessages.size
-        //this.clicked.add(false)
+        //this.messageArraySize = this.allMessages.size
 
         notifyDataSetChanged()
     }
@@ -134,7 +139,6 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
         return viewHolder
     }
 
-    //TODO fix visibility bugs
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         when (holder.itemViewType) {
@@ -157,12 +161,7 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
 
                 holder.delete.setOnClickListener {
 
-                    val dao = DataBaseHolder.getInstance(context).dao()
-
-                    val dbOperation = Thread { dao.delete(allMessages[position].key!!) }
-                    dbOperation.start()
-                    dbOperation.join()
-
+                    CoroutineScope(IO).launch { dao.delete(allMessages[position].key!!) }
                     notifyItemRemoved(position)
 
                 }
@@ -173,22 +172,25 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                     clip = ClipData.newPlainText("copied", holder.textView.text)
                     clipboard.primaryClip = clip
 
-                    val dao = DataBaseHolder.getInstance(context).dao()
-
                     if (allMessages[position].clicked) {
                         holder.delete.visibility = View.GONE
                         holder.info.visibility = View.GONE
-                        val dbOperation =
-                            Thread { dao.updateChecked(false, allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
+                        CoroutineScope(IO).launch {
+                            dao.updateChecked(
+                                false,
+                                allMessages[position].key!!
+                            )
+                        }
                     } else {
                         holder.delete.visibility = View.VISIBLE
                         holder.info.visibility = View.VISIBLE
-                        val dbOperation =
-                            Thread { dao.updateChecked(true, allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
+                        CoroutineScope(IO).launch {
+                            dao.updateChecked(
+                                true,
+                                allMessages[position].key!!
+                            )
+                        }
+
                     }
                 }
 
@@ -215,11 +217,7 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
 
                 holder.delete.setOnClickListener {
 
-                    val dao = DataBaseHolder.getInstance(context).dao()
-
-                    val dbOperation = Thread { dao.delete(allMessages[position].key!!) }
-                    dbOperation.start()
-                    dbOperation.join()
+                    CoroutineScope(IO).launch { dao.delete(allMessages[position].key!!) }
 
                     notifyItemRemoved(position)
 
@@ -231,22 +229,26 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
                     clip = ClipData.newPlainText("copied", holder.textView.text)
                     clipboard.primaryClip = clip
 
-                    val dao = DataBaseHolder.getInstance(context).dao()
-
                     if (allMessages[position].clicked) {
                         holder.delete.visibility = View.GONE
                         holder.info.visibility = View.GONE
-                        val dbOperation =
-                            Thread { dao.updateChecked(false, allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
+                        CoroutineScope(IO).launch {
+                            dao.updateChecked(
+                                false,
+                                allMessages[position].key!!
+                            )
+                        }
+
                     } else {
                         holder.delete.visibility = View.VISIBLE
                         holder.info.visibility = View.VISIBLE
-                        val dbOperation =
-                            Thread { dao.updateChecked(true, allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
+                        CoroutineScope(IO).launch {
+                            dao.updateChecked(
+                                true,
+                                allMessages[position].key!!
+                            )
+                        }
+
                     }
                 }
             }
@@ -287,11 +289,7 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
 
                 holder.delete.setOnClickListener {
 
-                    val dao = DataBaseHolder.getInstance(context).dao()
-
-                    val dbOperation = Thread { dao.delete(allMessages[position].key!!) }
-                    dbOperation.start()
-                    dbOperation.join()
+                    CoroutineScope(IO).launch { dao.delete(allMessages[position].key!!) }
 
                     notifyItemRemoved(position)
 
@@ -299,22 +297,24 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
 
                 holder.itemView.setOnClickListener {
 
-                    val dao = DataBaseHolder.getInstance(context).dao()
-
                     if (allMessages[position].clicked) {
                         holder.delete.visibility = View.GONE
                         holder.info.visibility = View.GONE
-                        val dbOperation =
-                            Thread { dao.updateChecked(false, allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
+                        CoroutineScope(IO).launch {
+                            dao.updateChecked(
+                                false,
+                                allMessages[position].key!!
+                            )
+                        }
                     } else {
                         holder.delete.visibility = View.VISIBLE
                         holder.info.visibility = View.VISIBLE
-                        val dbOperation =
-                            Thread { dao.updateChecked(true, allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
+                        CoroutineScope(IO).launch {
+                            dao.updateChecked(
+                                true,
+                                allMessages[position].key!!
+                            )
+                        }
                     }
                 }
 
@@ -352,34 +352,31 @@ class ChatRecyclerAdapter internal constructor(private val context: Context) :
 
                 holder.delete.setOnClickListener {
 
-                    val dao = DataBaseHolder.getInstance(context).dao()
-
-                    val dbOperation = Thread { dao.delete(allMessages[position].key!!) }
-                    dbOperation.start()
-                    dbOperation.join()
-
+                    CoroutineScope(IO).launch { dao.delete(allMessages[position].key!!) }
                     notifyItemRemoved(position)
 
                 }
 
                 holder.itemView.setOnClickListener {
 
-                    val dao = DataBaseHolder.getInstance(context).dao()
-
                     if (allMessages[position].clicked) {
                         holder.delete.visibility = View.GONE
                         holder.info.visibility = View.GONE
-                        val dbOperation =
-                            Thread { dao.updateChecked(false, allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
+                        CoroutineScope(IO).launch {
+                            dao.updateChecked(
+                                false,
+                                allMessages[position].key!!
+                            )
+                        }
                     } else {
                         holder.delete.visibility = View.VISIBLE
                         holder.info.visibility = View.VISIBLE
-                        val dbOperation =
-                            Thread { dao.updateChecked(true, allMessages[position].key!!) }
-                        dbOperation.start()
-                        dbOperation.join()
+                        CoroutineScope(IO).launch {
+                            dao.updateChecked(
+                                true,
+                                allMessages[position].key!!
+                            )
+                        }
                     }
                 }
 

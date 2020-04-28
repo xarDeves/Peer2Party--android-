@@ -22,7 +22,6 @@
             android:backgroundTint="@color/secondary"
             android:paddingStart="7dp"
             android:paddingEnd="7dp"
-            android:text="asdasd"
             android:textColor="#FFF"
             android:textSize="12sp" />
 

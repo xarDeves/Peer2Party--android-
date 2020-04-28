@@ -12,7 +12,7 @@ object Sender {
 
     private lateinit var pw: PrintWriter
     private var sSend: Socket? = null
-    private const val ipToConnect: String = "192.168.1.2"
+    private const val ipToConnect: String = "192.168.1.7"
 
     fun sendText(textToSend: String): Boolean {
         if (!(textToSend.isBlank() || textToSend.isEmpty() || ipToConnect.isBlank() || ipToConnect.isEmpty())) {

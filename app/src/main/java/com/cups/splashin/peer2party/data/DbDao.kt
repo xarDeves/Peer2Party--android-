@@ -11,13 +11,13 @@ interface DbDao {
     @Insert
     suspend fun insert(entity: EntityDataClass)
 
-    @Query("Select * from message")
-    fun getAllMessages(): LiveData<List<EntityDataClass>>
-
     @Query("DELETE FROM message WHERE `key` = :position")
-    fun delete(position: Int)
+    suspend fun delete(position: Int)
 
     @Query("UPDATE message SET clicked = :isClicked WHERE `key` = :position")
-    fun updateChecked(isClicked: Boolean, position: Int)
+    suspend fun updateChecked(isClicked: Boolean, position: Int)
+
+    @Query("Select * from message")
+    fun getAllMessages(): LiveData<List<EntityDataClass>>
 
 }

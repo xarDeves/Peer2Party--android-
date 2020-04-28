@@ -12,6 +12,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.cups.splashin.peer2party.data.DataBaseHolder
+import com.cups.splashin.peer2party.data.DbDao
 import com.cups.splashin.peer2party.data.EntityDataClass
 import com.cups.splashin.peer2party.data.Repository
 import com.cups.splashin.peer2party.fetchDateTime
@@ -61,17 +62,17 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     var peerList = mutableListOf<String>()
 
     private val repository: Repository
+    private var dao: DbDao = DataBaseHolder.getInstance(application).dao()
     var allMessages: LiveData<List<EntityDataClass>>
 
     fun insertEntity(entity: EntityDataClass) {
         viewModelScope.launch {
-            repository.insertEntity(entity)
+            dao.insert(entity)
         }
     }
 
     init {
 
-        val dao = DataBaseHolder.getInstance(application).dao()
         repository = Repository(dao)
         allMessages = repository.allMessages
 
