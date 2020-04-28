@@ -1,12 +1,7 @@
 package com.cups.splashin.peer2party.viewmodels
 
 import android.app.Application
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.graphics.BitmapFactory
-import android.os.Environment
-import android.util.Log
 import android.widget.ListView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -15,20 +10,14 @@ import com.cups.splashin.peer2party.data.DataBaseHolder
 import com.cups.splashin.peer2party.data.DbDao
 import com.cups.splashin.peer2party.data.EntityDataClass
 import com.cups.splashin.peer2party.data.Repository
-import com.cups.splashin.peer2party.fetchDateTime
 import com.cups.splashin.peer2party.fragments.ChatFragment
 import com.cups.splashin.peer2party.fragments.PeerListFragment
-import com.cups.splashin.peer2party.functionality.Reader
-import com.cups.splashin.peer2party.functionality.Saver
+import com.cups.splashin.peer2party.networker.functionality.Presenter
 import kotlinx.coroutines.launch
 import java.io.DataInputStream
-import java.io.File
-import java.io.FileOutputStream
 import java.io.InputStream
 import java.net.ServerSocket
 import java.net.Socket
-import java.text.SimpleDateFormat
-import java.util.*
 
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
@@ -71,13 +60,19 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+
     init {
 
         repository = Repository(dao)
         allMessages = repository.allMessages
 
         Thread {
-            while (true) {
+
+            val swingWorkerLock = Any()
+            Presenter("asdf", swingWorkerLock)
+
+            //for testing purposes only, cleanup after networker's completion
+            /*while (true) {
                 sRec = sServ.accept()
 
                 inputStream = sRec.getInputStream()
@@ -85,7 +80,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 messageByte = inputStream.readBytes()
                 identifier = messageByte[0].toInt()
                 messageByte = messageByte.copyOfRange(1, messageByte.size)
-                /*
+                *//*
                 dataIs = DataInputStream(BufferedInputStream(sRec.getInputStream()))
                 identifier = dataIs.readInt()
 
@@ -101,7 +96,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 while (inputStream.read(buffer) != -1){
                     messageByte += buffer
                     observableProgressUpdater.postValue()
-                }*/
+                }*//*
 
                 when (identifier) {
                     0 -> {
@@ -128,12 +123,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                         options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
 
                         //in order to get width and height:
-                        /*BitmapFactory.decodeByteArray(
+                        *//*BitmapFactory.decodeByteArray(
                             messageByte,
                             0,
                             messageByte.size,
                             options
-                        )*/
+                        )*//*
 
                         val imageHeight = options!!.outHeight
                         val imageWidth = options!!.outWidth
@@ -186,7 +181,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
                 }
 
 
-            }
+            }*/
         }.start()
     }
 
