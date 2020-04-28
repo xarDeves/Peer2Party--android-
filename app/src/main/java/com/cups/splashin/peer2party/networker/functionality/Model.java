@@ -13,6 +13,7 @@ import com.cups.splashin.peer2party.networker.networking.singleton.SingletonNetw
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 
 //TODO other than refactoring to kotlin, refactor the file tree as a final step for v1.0 completion
 class Model {
@@ -45,10 +46,11 @@ class Model {
         }
 
         try {
-            serverSocket = new ServerSocket(0);
+            String inetAddress = getTrueOutputAddress();
+            serverSocket = new ServerSocket(0, 0, InetAddress.getByName(inetAddress));
 
             networkData  = SingletonNetworkData.getInstance(
-                    InetAddress.getLocalHost().getHostAddress(),
+                    inetAddress,
                     serverSocket.getLocalPort(),
                     username);
 
@@ -60,6 +62,17 @@ class Model {
             ex.printStackTrace();
             System.exit(-1);
         }
+    }
+
+    private String getTrueOutputAddress() throws IOException {
+        //credit later
+        //https://stackoverflow.com/a/2381398/10007109
+        Socket s = new Socket("www.google.com", 80);
+        String address = s.getLocalAddress().getHostAddress();
+        s.close();
+
+        System.out.println("Model: network address is " + address);
+        return address;
     }
 
     private void startBroadcastingFindPeersThread() {

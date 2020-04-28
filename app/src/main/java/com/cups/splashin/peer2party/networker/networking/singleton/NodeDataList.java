@@ -81,11 +81,9 @@ class NodeDataList {
         if(len > 1){
             String[][] nodeData  = new String[len - 1][2];
 
-            int j, i = 1;
-            for(NodeData node : nodeArray){
-                j = 0;
-                nodeData[i][j++] = node.getALIAS();
-                nodeData[i++][j] = node.getPORT().toString();
+            for(int i = 1; i < len; i++){
+                nodeData[i-1][0] = nodeArray[i].getALIAS();
+                nodeData[i-1][1] = nodeArray[i].getPORT().toString();
             }
 
             return nodeData;
