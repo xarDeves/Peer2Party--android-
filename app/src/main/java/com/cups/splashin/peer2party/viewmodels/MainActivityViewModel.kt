@@ -31,7 +31,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private var options: BitmapFactory.Options? = null
 
     //private lateinit var messageByteClean: ByteArray
-    lateinit var username: String
     private val sServ: ServerSocket = ServerSocket(7000)
     private lateinit var sRec: Socket
     private lateinit var dataIs: DataInputStream
@@ -61,129 +60,140 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
+    fun connect(ID: String) {
+
+        Thread {
+
+            val swingWorkerLock = Any()
+            Presenter(ID, swingWorkerLock)
+        }.start()
+
+    }
 
     init {
 
         repository = Repository(dao)
         allMessages = repository.allMessages
 
-        Thread {
+/*Thread {
 
-            val swingWorkerLock = Any()
-            Presenter("asdf", swingWorkerLock)
+    val swingWorkerLock = Any()
+    Presenter(username, swingWorkerLock)
 
-            //for testing purposes only, cleanup after networker's completion
-            /*while (true) {
-                sRec = sServ.accept()
+    //for testing purposes only, cleanup after networker's completion
+    /*while (true) {
+        sRec = erv.accept()
 
-                inputStream = sRec.getInputStream()
+        inputStream = sRec.getInputStream()
 
-                messageByte = inputStream.readBytes()
-                identifier = messageByte[0].toInt()
-                messageByte = messageByte.copyOfRange(1, messageByte.size)
-                *//*
-                dataIs = DataInputStream(BufferedInputStream(sRec.getInputStream()))
-                identifier = dataIs.readInt()
+        messageByte = inputStream.readBytes()
+        identifier = messageByte[0].toInt()
+        messageByte = messageByte.copyOfRange(1, messageByte.size)
+        *//*
+        dataIs = DataInputStream(BufferedInputStream(sRec.getInputStream()))
+        identifier = dataIs.readInt()
 
-                val buffer = ByteArray(1024)
-                var read: Int
-                inputStream.read(buffer)
-                val firstChunk = buffer.copyOfRange(1, buffer.lastIndex)
+        val buffer = ByteArray(1024)
+        var read: Int
+        inputStream.read(buffer)
+        val firstChunk = buffer.copyOfRange(1, buffer.lastIndex)
 
-                //for progress bar. Need to know the file size first
-                //i need the network manager code:
-                messageByte = inputStream.read(buffer)
+        //for progress bar. Need to know the file size first
+        //i need the network manager code:
+        messageByte = inputStream.read(buffer)
 
-                while (inputStream.read(buffer) != -1){
-                    messageByte += buffer
-                    observableProgressUpdater.postValue()
-                }*//*
+        while (inputStream.read(buffer) != -1){
+            messageByte += buffer
+            observableProgressUpdater.postValue()
+        }*//*
 
-                when (identifier) {
-                    0 -> {
-                        //goto reader for testing purposes:
-                        Log.d("fuck", "A")
-                        val text = Reader.readText(messageByte, inputStream)
-                        if (text.isNotBlank() && text.isNotEmpty()) {
-                            //auto copy to clipboard on receive (i just want to check something):
-                            val clipboard =
-                                application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newPlainText("copied", text)
-                            clipboard.primaryClip = clip
-                            insertEntity(
-                                EntityDataClass(
-                                    0,
-                                    text,
-                                    fetchDateTime(),
-                                    "receiveText"
-                                )
-                            )
-                        }
-                    }
-                    1 -> {
-                        options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-
-                        //in order to get width and height:
-                        *//*BitmapFactory.decodeByteArray(
-                            messageByte,
+        when (identifier) {
+            0 -> {
+                //goto reader for testing purposes:
+                Log.d("fuck", "A")
+                val text = Reader.readText(messageByte, inputStream)
+                if (text.isNotBlank() && text.isNotEmpty()) {
+                    //auto copy to clipboard on receive (i just want to check something):
+                    val clipboard =
+                        application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("copied", text)
+                    clipboard.primaryClip = clip
+                    insertEntity(
+                        EntityDataClass(
                             0,
-                            messageByte.size,
-                            options
-                        )*//*
-
-                        val imageHeight = options!!.outHeight
-                        val imageWidth = options!!.outWidth
-
-                        if (imageHeight != -1) {
-                            val image = Reader.readImage(
-                                messageByte,
-                                screenW!!,
-                                screenH!!,
-                                imageWidth,
-                                imageHeight
-                            )
-                            val uri = Saver.saveImage(image)
-                            insertEntity(
-                                EntityDataClass(
-                                    2,
-                                    uri,
-                                    fetchDateTime(),
-                                    "receiveImage",
-                                    android.text.format.Formatter.formatFileSize(
-                                        application,
-                                        messageByte.size.toLong()
-                                    )
-                                )
-                            )
-                        }
-                    }
-                    2 -> {
-                        Saver.saveAudio(messageByte)
-                    }
-                    3 -> {
-                        Log.d("fuck", "attempting to save video")
-                        Saver.currentTime = SimpleDateFormat("yyyyMMdd_hhmmss", Locale.getDefault())
-                        Saver.timeString =
-                            Saver.currentTime.format(System.currentTimeMillis()).toString()
-                        val path = Environment.getExternalStorageDirectory().absolutePath
-                        //change path:
-                        val dir = File("$path/DCIM/")
-                        dir.mkdirs()
-                        //change extension:
-                        Saver.file = File(dir, "${Saver.currentTime}.mp4")
-                        val fos = FileOutputStream(Saver.file)
-                        fos.write(messageByte)
-                        fos.flush()
-                        fos.close()
-                        Log.d("fuck", "video saved successfully")
-                        //Saver.saveVideo(messageByte)
-                        //observableImage.postValue(entityDataClasses.last())
-                    }
+                            text,
+                            fetchDateTime(),
+                            "receiveText"
+                        )
+                    )
                 }
+            }
+            1 -> {
+                options = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+
+                //in order to get width and height:
+                *//*BitmapFactory.decodeByteArray(
+                    messageByte,
+                    0,
+                    messageByte.size,
+                    options
+                )*//*
+
+                val imageHeight = options!!.outHeight
+                val imageWidth = options!!.outWidth
+
+                if (imageHeight != -1) {
+                    val image = Reader.readImage(
+                        messageByte,
+                        screenW!!,
+                        screenH!!,
+                        imageWidth,
+                        imageHeight
+                    )
+                    val uri = Saver.saveImage(image)
+                    insertEntity(
+                        EntityDataClass(
+                            2,
+                            uri,
+                            fetchDateTime(),
+                            "receiveImage",
+                            android.text.format.Formatter.formatFileSize(
+                                application,
+                                messageByte.size.toLong()
+                            )
+                        )
+                    )
+                }
+            }
+            2 -> {
+                Saver.saveAudio(messageByte)
+            }
+            3 -> {
+                Log.d("fuck", "attempting to save video")
+                Saver.currentTime = SimpleDateFormat("yyyyMMdd_hhmmss", Locale.getDefault())
+                Saver.timeString =
+                    Saver.currentTime.format(System.currentTimeMillis()).toString()
+                val path = Environment.getExternalStorageDirectory().absolutePath
+                //change path:
+                val dir = File("$path/DCIM/")
+                dir.mkdirs()
+                //change extension:
+                Saver.file = File(dir, "${Saver.currentTime}.mp4")
+                val fos = FileOutputStream(Saver.file)
+                fos.write(messageByte)
+                fos.flush()
+                fos.close()
+                Log.d("fuck", "video saved successfully")
+                //Saver.saveVideo(messageByte)
+                //observableImage.postValue(entityDataClasses.last())
+            }
+        }
 
 
-            }*/
-        }.start()
+    }
+}.start()
+ */
+ */
     }
 
 }

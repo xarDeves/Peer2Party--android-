@@ -173,8 +173,8 @@ class MainActivity : AppCompatActivity() {
 
         ID = intent.extras.getString("ID")
         bundle.putString("ID", ID)
-        (viewModel as MainActivityViewModel).username = ID
         (viewModel as MainActivityViewModel).fragmentA.arguments = bundle
+        (viewModel as MainActivityViewModel).connect(ID)
 
         fragmentManager = supportFragmentManager
         transactionManager = fragmentManager.beginTransaction()
