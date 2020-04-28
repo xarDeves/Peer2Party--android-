@@ -9,6 +9,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AppCompatActivity
 import com.cups.splashin.peer2party.R
 
+//TODO replace image on StartupScreen with .svg
 class StartupScreen : AppCompatActivity() {
 
     private lateinit var connectBtn: Button

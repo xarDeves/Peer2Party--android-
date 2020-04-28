@@ -31,6 +31,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private var options: BitmapFactory.Options? = null
 
     //private lateinit var messageByteClean: ByteArray
+    lateinit var username: String
     private val sServ: ServerSocket = ServerSocket(7000)
     private lateinit var sRec: Socket
     private lateinit var dataIs: DataInputStream
