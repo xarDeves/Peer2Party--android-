@@ -2,7 +2,6 @@ package com.cups.splashin.peer2party.viewmodels
 
 import android.app.Application
 import android.graphics.BitmapFactory
-import android.widget.ListView
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -18,15 +17,10 @@ import java.io.DataInputStream
 import java.io.InputStream
 import java.net.ServerSocket
 import java.net.Socket
+import java.util.*
 
 
 class MainActivityViewModel(application: Application) : AndroidViewModel(application) {
-
-    override fun onCleared() {
-        super.onCleared()
-
-        println("fuck")
-    }
 
     private var options: BitmapFactory.Options? = null
 
@@ -39,6 +33,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private var buffer: ByteArray = ByteArray(512)
     private lateinit var messageByte: ByteArray
     private lateinit var inputStream: InputStream
+    lateinit var presenter: Presenter
     var screenH: Int? = null
     var screenW: Int? = null
 
@@ -47,12 +42,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     val fragmentB = PeerListFragment()
 
     //for PeerList fragment
-    lateinit var peerListView: ListView
-    var peerList = mutableListOf<String>()
+    //var peerList = mutableListOf<String>()
 
     private val repository: Repository
     private var dao: DbDao = DataBaseHolder.getInstance(application).dao()
     var allMessages: LiveData<List<EntityDataClass>>
+    var peers: LinkedList<String>? = null
 
     fun insertEntity(entity: EntityDataClass) {
         viewModelScope.launch {
@@ -60,20 +55,21 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun connect(ID: String) {
-
-        Thread {
-
-            val swingWorkerLock = Any()
-            Presenter(ID, swingWorkerLock)
-        }.start()
-
+    fun fetchPeers(){
+        peers = presenter.peerNamesAndPortsPanels
     }
+
+    fun connect(ID: String) = Thread {
+
+        val swingWorkerLock = Any()
+        presenter = Presenter(ID, swingWorkerLock)
+    }.start()
 
     init {
 
         repository = Repository(dao)
         allMessages = repository.allMessages
+
 
 /*Thread {
 

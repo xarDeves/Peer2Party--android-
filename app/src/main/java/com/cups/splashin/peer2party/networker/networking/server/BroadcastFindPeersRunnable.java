@@ -38,12 +38,12 @@ public class BroadcastFindPeersRunnable extends Broadcaster implements Runnable 
         while (true) {
             if ((i % 30) == 0) {
                 for (int j = 0; j < 3; j++) {
-                    try{
+                    try {
                         broadcastStr(broadcastSocket,
                                 networkData.getSoftwareIdentifier() + ","
-                                + networkData.getIP() + ","
-                                + networkData.getTcpPort() + ","
-                                + networkData.getALIAS(),
+                                        + networkData.getIP() + ","
+                                        + networkData.getTcpPort() + ","
+                                        + networkData.getALIAS(),
                                 networkData.getUdpDeclarePeersPort());
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -64,14 +64,14 @@ public class BroadcastFindPeersRunnable extends Broadcaster implements Runnable 
         String ip = receivedData[1];
         String alias = receivedData[3];
         int port = Integer.parseInt(receivedData[2]);
-        boolean ip_check   = networkData.containsIP(ip);
+        boolean ip_check = networkData.containsIP(ip);
         boolean port_check = networkData.containsPORT(port);
 
         if (!ip_check || !port_check) {
             System.out.println("Broadcast Thread: Appended to list & active sockets!");
 
-            try{
-                Socket s = new Socket(ip,port);                         //sends alias
+            try {
+                Socket s = new Socket(ip, port);                         //sends alias
                 PrintWriter pr = new PrintWriter(s.getOutputStream());  //sends alias
 
                 System.out.println("Broadcast Thread: Sending alias");
@@ -79,7 +79,7 @@ public class BroadcastFindPeersRunnable extends Broadcaster implements Runnable 
                 s.setSoTimeout(1000);
                 pr.println(networkData.getALIAS());                        //sends alias
                 s.setSoTimeout(0);
-                networkData.insertIPPORTALIASSocket(ip,port,alias,s);
+                networkData.insertIPPORTALIASSocket(ip, port, alias, s);
 
             } catch (IOException e) {
                 e.printStackTrace();

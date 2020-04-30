@@ -74,7 +74,6 @@ class MainActivity : AppCompatActivity() {
         (viewModel as MainActivityViewModel).screenH = max(height, width)
     }
 
-
     override fun onBackPressed() {
 
         if (fragmentManager.backStackEntryCount == 1) {
@@ -161,20 +160,43 @@ class MainActivity : AppCompatActivity() {
         fragmentManager.executePendingTransactions()
 
     }
+/*
+    @Subscribe(sticky = true)
+    fun onEvent(event: PeerTransaction) {
+        Log.d("fuck", "activity")
+        (viewModel as MainActivityViewModel).fetchPeers()
+    }
+
+
+    override fun onDestroy() {
+
+        EventBus.getDefault().unregister(this)
+        super.onDestroy()
+    }
+
+    override fun onStart() {
+
+        EventBus.getDefault().register(this)
+        super.onStart()
+    }
+*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
+
         //in order to save to device's storage:
         verifyStoragePermissions(this)
         fetchScreenDimensions()
 
-        ID = intent.extras.getString("ID")
-        bundle.putString("ID", ID)
-        (viewModel as MainActivityViewModel).fragmentA.arguments = bundle
-        (viewModel as MainActivityViewModel).connect(ID)
+        if(savedInstanceState == null){
+            ID = intent.extras.getString("ID")
+            bundle.putString("ID", ID)
+            (viewModel as MainActivityViewModel).fragmentA.arguments = bundle
+            (viewModel as MainActivityViewModel).connect(ID)
+        }
 
         fragmentManager = supportFragmentManager
         transactionManager = fragmentManager.beginTransaction()

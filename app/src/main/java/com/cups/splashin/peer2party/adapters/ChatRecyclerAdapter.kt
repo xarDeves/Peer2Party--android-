@@ -1,4 +1,4 @@
-package com.cups.splashin.peer2party
+package com.cups.splashin.peer2party.adapters
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -13,6 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.cups.splashin.peer2party.R
 import com.cups.splashin.peer2party.data.DataBaseHolder
 import com.cups.splashin.peer2party.data.DbDao
 import com.cups.splashin.peer2party.data.EntityDataClass
@@ -24,11 +25,11 @@ import java.io.File
 
 class ChatRecyclerAdapter internal constructor(
     private val context: Context,
-    private val dao: DbDao = DataBaseHolder.getInstance(context).dao()
+    private val dao: DbDao = DataBaseHolder.getInstance(context).dao(),
+    private val inflater: LayoutInflater = LayoutInflater.from(context)
 ) : RecyclerView.Adapter<ViewHolder>() {
 
     private lateinit var file: File
-    private val inflater: LayoutInflater = LayoutInflater.from(context)
     private lateinit var viewHolder: ViewHolder
     private lateinit var view: View
     private lateinit var clipboard: ClipboardManager
@@ -36,7 +37,6 @@ class ChatRecyclerAdapter internal constructor(
     private lateinit var uri: String
 
     private var allMessages = emptyList<EntityDataClass>()
-    //TODO remove "clicked" from DB and persist on runtime only
     //private var clicked: MutableList<Boolean> = mutableListOf()
 
     //private var messageArraySize: Int? = null
@@ -116,23 +116,32 @@ class ChatRecyclerAdapter internal constructor(
             RECEIVE_TEXT -> {
                 view = inflater.inflate(R.layout.chat_head_recieve, parent, false)
                 viewHolder =
-                    TextReceivedViewHolder(view)
+                    TextReceivedViewHolder(
+                        view
+                    )
 
             }
             SEND_TEXT -> {
                 view = inflater.inflate(R.layout.chat_head_send, parent, false)
                 viewHolder =
-                    TextSendViewHolder(view)
+                    TextSendViewHolder(
+                        view
+                    )
 
             }
             RECEIVE_IMAGE -> {
                 view = inflater.inflate(R.layout.image_recieve, parent, false)
                 viewHolder =
-                    ImageReceivedViewHolder(view)
+                    ImageReceivedViewHolder(
+                        view
+                    )
             }
             SEND_IMAGE -> {
                 view = inflater.inflate(R.layout.image_send, parent, false)
-                viewHolder = ImageSendViewHolder(view)
+                viewHolder =
+                    ImageSendViewHolder(
+                        view
+                    )
             }
         }
 
@@ -271,7 +280,9 @@ class ChatRecyclerAdapter internal constructor(
                         .into((holder as ImageReceivedViewHolder).imageView)
 
                 } else {
-                    (holder as ImageReceivedViewHolder).imageView.setImageResource(R.drawable.not_found)
+                    (holder as ImageReceivedViewHolder).imageView.setImageResource(
+                        R.drawable.not_found
+                    )
                 }
 
                 holder.alias.text =
@@ -336,7 +347,9 @@ class ChatRecyclerAdapter internal constructor(
                         .dontTransform()
                         .into((holder as ImageSendViewHolder).imageView)
                 } else {
-                    (holder as ImageSendViewHolder).imageView.setImageResource(R.drawable.not_found)
+                    (holder as ImageSendViewHolder).imageView.setImageResource(
+                        R.drawable.not_found
+                    )
                 }
 
                 holder.date.text = allMessages[position].date

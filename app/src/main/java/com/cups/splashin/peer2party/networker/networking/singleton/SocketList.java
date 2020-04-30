@@ -10,7 +10,6 @@ class SocketList {
     private Object socketListLock = new Object();
 
     SocketList() {
-
     }
 
     void addElement(Socket s) {

@@ -16,7 +16,7 @@ abstract public class Broadcaster {
 
     private static volatile DatagramSocket peerMsgSocket;
 
-    void receivePackets(DatagramSocket udpsocket, DatagramPacket receivePacket){
+    void receivePackets(DatagramSocket udpsocket, DatagramPacket receivePacket) {
         try {
             System.out.println("Broadcast Thread: Waiting to receive UDP packets...");
             udpsocket.receive(receivePacket);
@@ -46,7 +46,7 @@ abstract public class Broadcaster {
         System.out.println("Broadcast Thread: Sent DatagramPackets! " + s);
     }
 
-    void sendAlias(String ip, int port, String alias, Socket s) throws IOException{
+    void sendAlias(String ip, int port, String alias, Socket s) throws IOException {
         PrintWriter pr = new PrintWriter(s.getOutputStream());  //sends alias
 
         s.setSoTimeout(1000);
@@ -55,7 +55,7 @@ abstract public class Broadcaster {
         s.setSoTimeout(0);
 
         System.out.println("Broadcaster Thread: Appended to list & active sockets!");
-        networkData.insertIPPORTALIASSocket(ip,port, alias,s);
+        networkData.insertIPPORTALIASSocket(ip, port, alias, s);
     }
 
     DatagramSocket createSocket(int port) {
@@ -63,12 +63,12 @@ abstract public class Broadcaster {
         try {
             udpSocket = new DatagramSocket(port);
             udpSocket.setBroadcast(true);
-            if (port == networkData.getUdpDeclareMsgPort()){
+            if (port == networkData.getUdpDeclareMsgPort()) {
 
-                if(peerMsgSocket == null){
+                if (peerMsgSocket == null) {
                     peerMsgSocket = udpSocket;
-                }else{
-                    synchronized (peerMsgSocket){
+                } else {
+                    synchronized (peerMsgSocket) {
                         peerMsgSocket = udpSocket;
                     }
                 }
@@ -84,7 +84,7 @@ abstract public class Broadcaster {
         return null;
     }
 
-    public static void closePeerMsgSocket(){
+    public static void closePeerMsgSocket() {
         peerMsgSocket.close();
     }
 }
