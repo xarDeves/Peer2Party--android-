@@ -25,11 +25,11 @@ class PeerListFragment : Fragment() {
     private lateinit var recycler: RecyclerView
     private lateinit var peersAdapter: PeersRecyclerAdapter
 
-    override fun onResume() {
+    /*override fun onResume() {
         super.onResume()
         peersAdapter.setPeers(viewModel.peers!!)
 
-    }
+    }*/
 
     override fun onDestroy() {
 

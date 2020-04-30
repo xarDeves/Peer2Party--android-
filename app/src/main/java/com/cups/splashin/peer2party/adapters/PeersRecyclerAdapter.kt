@@ -14,7 +14,6 @@ import java.util.*
 class PeersRecyclerAdapter internal constructor(
     private val context: Context,
     private val inflater: LayoutInflater = LayoutInflater.from(context)
-    //private val presenter: Presenter
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private lateinit var viewHolder: RecyclerView.ViewHolder
@@ -23,6 +22,7 @@ class PeersRecyclerAdapter internal constructor(
     class PeerViewHolder(
         view: View,
         val peerName: TextView = view.findViewById(R.id.peer_name),
+        val peerPort: TextView = view.findViewById(R.id.peer_port),
         val checkBox: CheckBox = view.findViewById(R.id.checkBox)
     ) : RecyclerView.ViewHolder(view)
 
@@ -49,6 +49,7 @@ class PeersRecyclerAdapter internal constructor(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as PeerViewHolder).peerName.text = peerList[position]
+        (holder as PeerViewHolder).peerName.text = peerList[position - 1]
+        holder.peerPort.text = peerList[position]
     }
 }
