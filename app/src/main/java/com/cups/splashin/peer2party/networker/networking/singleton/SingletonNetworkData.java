@@ -162,7 +162,7 @@ public class SingletonNetworkData {
             socketList.addElement(s);
             ipPortList.pushElement(ip, port);
             PeerTransaction event = new PeerTransaction();
-            Log.d("fuck", "SingletonNetworkData ok");
+            Log.d("fuck", "SingletonNetworkData posted");
             EventBus.getDefault().postSticky(event);
         }
     }

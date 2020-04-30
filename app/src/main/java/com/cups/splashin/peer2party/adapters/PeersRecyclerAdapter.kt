@@ -1,6 +1,7 @@
 package com.cups.splashin.peer2party.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,9 +27,12 @@ class PeersRecyclerAdapter internal constructor(
         val checkBox: CheckBox = view.findViewById(R.id.checkBox)
     ) : RecyclerView.ViewHolder(view)
 
-    fun setPeers(peers : LinkedList<String>){
+    fun setPeers(peers: LinkedList<String>) {
 
         this.peerList = peers
+        Log.d("fuck", "recycler updated")
+        Log.d("fuck", "recycler peerList: $peerList")
+
         notifyDataSetChanged()
     }
 
@@ -49,7 +53,8 @@ class PeersRecyclerAdapter internal constructor(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        (holder as PeerViewHolder).peerName.text = peerList[position - 1]
-        holder.peerPort.text = peerList[position]
+        Log.d("fuck", "onBind called")
+        (holder as PeerViewHolder).peerName.text = peerList[0]
+        holder.peerPort.text = peerList[1]
     }
 }

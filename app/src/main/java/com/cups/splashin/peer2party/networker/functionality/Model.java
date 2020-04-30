@@ -50,7 +50,7 @@ class Model {
             String inetAddress = getTrueOutputAddress();
             serverSocket = new ServerSocket(0, 0, InetAddress.getByName(inetAddress));
 
-            networkData  = SingletonNetworkData.getInstance(
+            networkData = SingletonNetworkData.getInstance(
                     inetAddress,
                     serverSocket.getLocalPort(),
                     username);

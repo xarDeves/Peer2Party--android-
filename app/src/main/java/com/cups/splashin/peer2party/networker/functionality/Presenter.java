@@ -46,6 +46,10 @@ public class Presenter {
             }
         });
 
+        //TODO modify this guy...every time i rotate the screen "newPeers" is empty, why not return peerList?
+        //TODO also...if you could make this a 2D List you've got a free blowjob <3 (tho on kotlin refactoring will be obsolete)
+
+       /*
         LinkedList<String> newPeers = new LinkedList<>();
 
         for (String[] strArr : peerData) {
@@ -53,12 +57,13 @@ public class Presenter {
                 peerList.add(strArr[0]);
                 peerList.add(strArr[1]);
 
-                newPeers.add(strArr[0]);
-                newPeers.add(strArr[1]);
+                //newPeers.add(strArr[0]);
+                //newPeers.add(strArr[1]);
             }
         }
+        */
 
-        return newPeers;
+        return peerList;
     }
 
     public void enableCommunicationWithUser(String alias, String port) {

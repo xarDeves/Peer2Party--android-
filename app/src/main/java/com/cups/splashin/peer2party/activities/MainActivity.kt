@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
+import android.util.Log
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -12,10 +13,14 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.cups.splashin.peer2party.PeerTransaction
 import com.cups.splashin.peer2party.R
 import com.cups.splashin.peer2party.fragments.ChatFragment
 import com.cups.splashin.peer2party.fragments.PeerListFragment
 import com.cups.splashin.peer2party.viewmodels.MainActivityViewModel
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.system.exitProcess
@@ -160,13 +165,6 @@ class MainActivity : AppCompatActivity() {
         fragmentManager.executePendingTransactions()
 
     }
-/*
-    @Subscribe(sticky = true)
-    fun onEvent(event: PeerTransaction) {
-        Log.d("fuck", "activity")
-        (viewModel as MainActivityViewModel).fetchPeers()
-    }
-
 
     override fun onDestroy() {
 
@@ -176,10 +174,19 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
 
-        EventBus.getDefault().register(this)
         super.onStart()
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
     }
-*/
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    fun onEvent(event: PeerTransaction) {
+        Log.d("fuck", "fetching peers")
+        (viewModel as MainActivityViewModel).fetchPeers()
+        Log.d("fuck", "setting peers on fragment")
+        (viewModel as MainActivityViewModel).fragmentB.peersAdapter.setPeers((viewModel as MainActivityViewModel).peers!!)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -191,7 +198,7 @@ class MainActivity : AppCompatActivity() {
         verifyStoragePermissions(this)
         fetchScreenDimensions()
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             ID = intent.extras.getString("ID")
             bundle.putString("ID", ID)
             (viewModel as MainActivityViewModel).fragmentA.arguments = bundle

@@ -2,6 +2,7 @@ package com.cups.splashin.peer2party.viewmodels
 
 import android.app.Application
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
@@ -55,18 +56,19 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-    fun fetchPeers(){
+    fun fetchPeers() {
         peers = presenter.peerNamesAndPortsPanels
+        Log.d("fuck", "viewmodel's fetchPeers called")
+        Log.d("fuck", "viewmodel's list: $peers")
+
     }
 
     fun connect(ID: String) = Thread {
-
         val swingWorkerLock = Any()
         presenter = Presenter(ID, swingWorkerLock)
     }.start()
 
     init {
-
         repository = Repository(dao)
         allMessages = repository.allMessages
 
