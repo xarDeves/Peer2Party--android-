@@ -235,6 +235,8 @@ class ChatFragment : Fragment() {
         recycler.layoutManager = layoutManager
         chatAdapter = ChatRecyclerAdapter(activity!!)
         recycler.adapter = chatAdapter
+        
+        usernameHolder.text = arguments!!.getString("ID")
 
         //goto RecyclerAdapter
         (viewModel as MainActivityViewModel).allMessages.observe(activity!!, Observer {

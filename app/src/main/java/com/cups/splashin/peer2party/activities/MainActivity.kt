@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
 
 
     private lateinit var viewModel: ViewModel
+    private lateinit var ID: String
+    private val bundle: Bundle = Bundle()
     private var doubleBackCheck = false
 
     private lateinit var fragmentManager: FragmentManager
@@ -168,6 +170,11 @@ class MainActivity : AppCompatActivity() {
         //in order to save to device's storage:
         verifyStoragePermissions(this)
         fetchScreenDimensions()
+
+        ID = intent.extras.getString("ID")
+        bundle.putString("ID", ID)
+        (viewModel as MainActivityViewModel).fragmentA.arguments = bundle
+        (viewModel as MainActivityViewModel).connect(ID)
 
         fragmentManager = supportFragmentManager
         transactionManager = fragmentManager.beginTransaction()
