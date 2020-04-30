@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Peer2Party</string>
-    <string name="id">ID:  %1$s</string>
     <string name="username">%1$s:</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package networking.singleton.data;
+package com.cups.splashin.peer2party.networker.networking.singleton.data;
 
 public class InboundIPPort {
 

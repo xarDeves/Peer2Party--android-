@@ -1,8 +1,8 @@
 package com.cups.splashin.peer2party.networker.networking.singleton;
 
-import java.util.Queue;
+import com.cups.splashin.peer2party.networker.networking.singleton.data.InboundIPPort;
 
-import networking.singleton.data.InboundIPPort;
+import java.util.Queue;
 
 class IPPortList {
 
@@ -10,9 +10,7 @@ class IPPortList {
 
     private final Object queueLock = new Object();
 
-    IPPortList(){
-
-    }
+    IPPortList(){}
 
 
     String[] getLastElement() {

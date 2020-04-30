@@ -23,7 +23,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp"
-                android:text="@string/id"
                 android:textSize="27sp" />
 
             <Button
@@ -40,7 +39,7 @@
     </TableLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+        android:id="@+id/chatRecycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/tableLayout"
@@ -56,7 +55,7 @@
         android:background="@drawable/button_rounded_corners"
         android:backgroundTint="@color/secondary"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/recycler"
+        app:layout_constraintBottom_toBottomOf="@+id/chatRecycler"
         app:layout_constraintStart_toStartOf="parent">
 
         <TableRow>

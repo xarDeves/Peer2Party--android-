@@ -1,11 +1,11 @@
 package com.cups.splashin.peer2party.networker.networking.singleton;
 
+import com.cups.splashin.peer2party.networker.networking.singleton.data.NodeData;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
-
-import networking.singleton.data.NodeData;
 
 class NodeDataList {
 
@@ -13,20 +13,20 @@ class NodeDataList {
 
     private final Object nodeDataLock = new Object();
 
-    NodeDataList(){
+    NodeDataList() {
 
     }
 
-    void appendNodeData(String ip, Integer p, String alias){
-        synchronized (nodeDataLock){
+    void appendNodeData(String ip, Integer p, String alias) {
+        synchronized (nodeDataLock) {
             nodeData.add(new NodeData(ip, p, alias));
         }
     }
 
-    int getIndexOfIPPort(String ip, Integer p){
+    int getIndexOfIPPort(String ip, Integer p) {
         OptionalInt res;
 
-        synchronized (nodeDataLock){
+        synchronized (nodeDataLock) {
             res = IntStream.range(0, nodeData.size())
                     .parallel()
                     .filter(i -> ip.equals(nodeData.get(i).getIP()))
@@ -40,8 +40,8 @@ class NodeDataList {
             return -1;
     }
 
-    void removeIpPort(String ip, Integer p){
-        synchronized (nodeDataLock){
+    void removeIpPort(String ip, Integer p) {
+        synchronized (nodeDataLock) {
             nodeData.stream().parallel()
                     .filter(nodeData1 -> ip.equals(nodeData1.getIP()))
                     .filter(nodeData1 -> p.equals(nodeData1.getPORT()))
@@ -49,8 +49,8 @@ class NodeDataList {
         }
     }
 
-    boolean containsIP(String ip){
-        synchronized (nodeDataLock){
+    boolean containsIP(String ip) {
+        synchronized (nodeDataLock) {
             Optional<NodeData> result = nodeData.stream().parallel()
                     .filter(nodeData1 -> nodeData1.getIP().equals(ip))
                     .findFirst();
@@ -58,8 +58,8 @@ class NodeDataList {
         }
     }
 
-    boolean containsPORT(Integer p){
-        synchronized (nodeDataLock){
+    boolean containsPORT(Integer p) {
+        synchronized (nodeDataLock) {
             Optional<NodeData> result = nodeData.stream().parallel()
                     .filter(nodeData1 -> nodeData1.getPORT().equals(p))
                     .findFirst();
@@ -81,11 +81,9 @@ class NodeDataList {
         if(len > 1){
             String[][] nodeData  = new String[len - 1][2];
 
-            int j, i = 1;
-            for(NodeData node : nodeArray){
-                j = 0;
-                nodeData[i][j++] = node.getALIAS();
-                nodeData[i++][j] = node.getPORT().toString();
+            for(int i = 1; i < len; i++){
+                nodeData[i-1][0] = nodeArray[i].getALIAS();
+                nodeData[i-1][1] = nodeArray[i].getPORT().toString();
             }
 
             return nodeData;

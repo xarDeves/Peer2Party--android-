@@ -26,8 +26,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cups.splashin.peer2party.ChatRecyclerAdapter
 import com.cups.splashin.peer2party.R
+import com.cups.splashin.peer2party.adapters.ChatRecyclerAdapter
 import com.cups.splashin.peer2party.data.EntityDataClass
 import com.cups.splashin.peer2party.fetchDateTime
 import com.cups.splashin.peer2party.functionality.Saver
@@ -229,11 +229,12 @@ class ChatFragment : Fragment() {
         recipientsBtn = view.findViewById(R.id.recipients)
 
         //recycler setup:
-        recycler = view.findViewById(R.id.recycler)
+        recycler = view.findViewById(R.id.chatRecycler)
         layoutManager = LinearLayoutManager(activity!!)
         //layoutManager.stackFromEnd = true
         recycler.layoutManager = layoutManager
-        chatAdapter = ChatRecyclerAdapter(activity!!)
+        chatAdapter =
+            ChatRecyclerAdapter(activity!!)
         recycler.adapter = chatAdapter
         
         usernameHolder.text = arguments!!.getString("ID")

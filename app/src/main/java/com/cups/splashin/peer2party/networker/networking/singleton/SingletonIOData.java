@@ -21,12 +21,12 @@ public class SingletonIOData {
 
     private static OutboundDataQueue outboundDataQueue;
 
-    private SingletonIOData(){
+    private SingletonIOData() {
 
     }
 
     public static SingletonIOData getInstance() {
-        if (instance == null){
+        if (instance == null) {
             instance = new SingletonIOData();
 
             initInboundDataMap();
@@ -36,50 +36,50 @@ public class SingletonIOData {
         return instance;
     }
 
-    private static void initInboundDataMap(){
+    private static void initInboundDataMap() {
         unprocessedDataMap = new UnprocessedDataMap();
         unprocessedDataMap.byteMap = new ConcurrentHashMap<>(256);
     }
 
-    private static void initMessageOutQueue(){
+    private static void initMessageOutQueue() {
         messageInQueue = new MessageInQueue();
         messageInQueue.messageIns = new LinkedBlockingQueue<>();
     }
 
-    private static void initOutboundDataQueue(){
+    private static void initOutboundDataQueue() {
         outboundDataQueue = new OutboundDataQueue();
         outboundDataQueue.byteQueue = new LinkedList<>();
     }
 
-    public void insertElementInboundData(@NotNull String key, byte[] val){
+    public void insertElementInboundData(@NotNull String key, byte[] val) {
         unprocessedDataMap.insertElement(key, val);
     }
 
-    public void removeElementInboundData(@NotNull String key){
+    public void removeElementInboundData(@NotNull String key) {
         unprocessedDataMap.removeElement(key);
     }
 
-    public byte[] getElementInboundData(@NotNull String key){
+    public byte[] getElementInboundData(@NotNull String key) {
         return unprocessedDataMap.getElement(key);
     }
 
-    public boolean hasElementsInboundData(){
+    public boolean hasElementsInboundData() {
         return unprocessedDataMap.hasElements();
     }
 
-    public Enumeration<String> getKeysInboundData(){
+    public Enumeration<String> getKeysInboundData() {
         return unprocessedDataMap.getKeys();
     }
 
-    public MessageIn getMessageProcessed(){
+    public MessageIn getMessageProcessed() {
         return messageInQueue.getMessageIn();
     }
 
-    public void insertMessageProcessed(String text, String alias, LinkedList<Image> thumbnail, char type){
+    public void insertMessageProcessed(String text, String alias, LinkedList<Image> thumbnail, char type) {
         messageInQueue.insertMessageIn(text, alias, thumbnail, type);
     }
 
-    public boolean IsEmptyProcessedMessage(){
+    public boolean IsEmptyProcessedMessage() {
         return messageInQueue.isEmpty();
     }
 
@@ -99,7 +99,7 @@ public class SingletonIOData {
         return outboundDataQueue.getQueueLength();
     }
 
-    public boolean hasElementsOutboundDataQueue(){
+    public boolean hasElementsOutboundDataQueue() {
         return outboundDataQueue.hasElements();
     }
 

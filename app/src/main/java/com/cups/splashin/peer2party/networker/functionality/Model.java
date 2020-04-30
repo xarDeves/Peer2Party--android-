@@ -23,7 +23,7 @@ class Model {
     private SingletonIOData ioData;
 
     private final Object findPeersLock = new Object();
-    private final Object decoderLock   = new Object();
+    private final Object decoderLock = new Object();
     private Object swingWorkerLock;
 
     Model(String username, Object swingWorkerLock) {
@@ -40,14 +40,15 @@ class Model {
 
     private void initializeServerVariables(String username, Object swingWorkerLock) {
         username = StaticHelper.convertToLegalName(username);
-        if (username.equals("")){
+        //TODO that guy is redundant:
+        if (username.equals("")) {
             throw new ExceptionInInitializerError("Invalid username");
         }
 
         try {
             serverSocket = new ServerSocket(0);
 
-            networkData  = SingletonNetworkData.getInstance(
+            networkData = SingletonNetworkData.getInstance(
                     InetAddress.getLocalHost().getHostAddress(),
                     serverSocket.getLocalPort(),
                     username);
@@ -74,26 +75,26 @@ class Model {
         new Thread(new BroadcastPeerMessageRunnable(findPeersLock)).start();
     }
 
-    private void startDecoderThread(){
+    private void startDecoderThread() {
         new Thread(new DecoderRunnable(decoderLock, swingWorkerLock)).start();
     }
 
     private void startExecutorPoolThread() {
-        new Thread(new ExecutionPoolRunnable(findPeersLock,decoderLock)).start();
+        new Thread(new ExecutionPoolRunnable(findPeersLock, decoderLock)).start();
     }
 
-    void sendMessage(byte identifier, byte[] payload){
+    void sendMessage(byte identifier, byte[] payload) {
         System.out.println("Main thread: pushing bytes");
         Long length = (long) payload.length;
 
-        ioData.pushElementOutboundDataQueue(new byte[] {identifier});
+        ioData.pushElementOutboundDataQueue(new byte[]{identifier});
         ioData.pushElementOutboundDataQueue(StaticHelper.convertLongToByteArray(length));
         ioData.pushElementOutboundDataQueue(payload);                     //testing only
         Broadcaster.closePeerMsgSocket();
         System.out.println("Main thread: OutboundQueue len is " + ioData.getQueueLengthOutboundDataQueue());     //testing only
     }
 
-    String[][] getAllNodeAliasPort(){
+    String[][] getAllNodeAliasPort() {
         return networkData.getAllNodeAliasPort();
     }
 }

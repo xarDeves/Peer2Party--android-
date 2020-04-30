@@ -45,7 +45,7 @@ public class ServerSocketRunnable implements Runnable {
                     String alias = br.readLine();
                     s.setSoTimeout(0);
                     alias = StaticHelper.convertToLegalName(alias);
-                    if (alias.equals("")){
+                    if (alias.equals("")) {
                         throw new IllegalCharsetNameException("Illegal name");
                     }
 
