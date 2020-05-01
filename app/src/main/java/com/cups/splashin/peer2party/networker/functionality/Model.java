@@ -19,7 +19,6 @@ import java.net.ServerSocket;
 
 //TODO other than refactoring to kotlin, refactor the file tree as a final step for v1.0 completion
 class Model {
-
     private ServerSocket serverSocket;
 
     private SingletonNetworkData networkData;

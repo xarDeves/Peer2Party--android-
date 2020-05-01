@@ -47,7 +47,7 @@ abstract public class Broadcaster {
     }
 
     void sendAlias(String ip, int port, String alias, Socket s) throws IOException {
-        PrintWriter pr = new PrintWriter(s.getOutputStream());  //sends alias
+        PrintWriter pr = new PrintWriter(s.getOutputStream(), true);  //sends alias
 
         s.setSoTimeout(1000);
         System.out.println("Broadcaster Thread: Sending alias");
@@ -72,9 +72,7 @@ abstract public class Broadcaster {
                         peerMsgSocket = udpSocket;
                     }
                 }
-
             }
-
 
             return udpSocket;
         } catch (SocketException ex) {

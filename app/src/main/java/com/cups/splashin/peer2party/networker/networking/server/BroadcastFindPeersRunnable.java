@@ -75,19 +75,10 @@ public class BroadcastFindPeersRunnable extends Broadcaster implements Runnable 
 
             try {
                 Socket s = new Socket(ip, port);                         //sends alias
-                PrintWriter pr = new PrintWriter(s.getOutputStream());  //sends alias
-
-                Log.d("networker","Broadcast Thread: Sending alias");
-
-                s.setSoTimeout(1000);
-                pr.println(networkData.getALIAS());                        //sends alias
-                s.setSoTimeout(0);
-                networkData.insertIPPORTALIASSocket(ip, port, alias, s);
-
+                sendAlias(ip, port, networkData.getALIAS(), s);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 }

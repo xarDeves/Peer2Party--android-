@@ -37,16 +37,18 @@ public class ServerSocketRunnable implements Runnable {
                 if (networkData.containsIP(s.getInetAddress().toString())
                         && networkData.containsPORT(s.getPort())) {
                     Log.d("networker","ServerSocket Thread: Found duplicate, closing connection...");
-                    socket.close();
+                    s.close();
 
                 } else {
                     Log.d("networker", "ServerSocket Thread: User connected! Appending to list!"); // for debug only
 
                     BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                    s.setSoTimeout(1000);
+                    s.setSoTimeout(2000);
                     String alias = br.readLine();
                     s.setSoTimeout(0);
                     alias = StaticHelper.convertToLegalName(alias);
+                    Log.d("networker", "ServerSocket Thread: got alias " + alias);
+
                     if (alias.equals("")) {
                         throw new IllegalCharsetNameException("Illegal name");
                     }
