@@ -34,11 +34,12 @@ public class Model {
     private final Object decoderLock = new Object();
     private String ipAddress;
 
-    private LinkedList<String> peerList;
+    LinkedList<String> peerList;
 
     public Model(String username, String ipAddress) {
         this.ipAddress = ipAddress;
-        initializeServerVariables(username);
+        this.initializeServerVariables(username);
+        this.startNetworking();
     }
 
     void startNetworking() {
@@ -71,7 +72,7 @@ public class Model {
         //TODO modify this guy...every time i rotate the screen "newPeers" is empty, why not return peerList?
         //TODO also...if you could make this a 2D List you've got a free blowjob <3 (tho on kotlin refactoring will be obsolete)
 
-       /*
+
         LinkedList<String> newPeers = new LinkedList<>();
 
         for (String[] strArr : peerData) {
@@ -79,13 +80,12 @@ public class Model {
                 peerList.add(strArr[0]);
                 peerList.add(strArr[1]);
 
-                //newPeers.add(strArr[0]);
-                //newPeers.add(strArr[1]);
+                newPeers.add(strArr[0]);
+                newPeers.add(strArr[1]);
             }
         }
-        */
 
-        return peerList;
+        return newPeers;
     }
 
     public void enableCommunicationWithUser(String alias, String port) {
