@@ -6,11 +6,12 @@
     android:background="#FFFFFF"
     android:orientation="vertical">
 
-<!--    <ListView
-        android:id="@+id/peerListHolder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:choiceMode="multipleChoice" />-->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="1dp"
+        android:background="@color/secondary" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/peersRecycler"

@@ -38,6 +38,7 @@ public class Model {
 
     public Model(String username, String ipAddress) {
         this.ipAddress = ipAddress;
+        this.peerList = new LinkedList<>();
         this.initializeServerVariables(username);
         this.startNetworking();
     }
@@ -85,7 +86,7 @@ public class Model {
             }
         }
 
-        return newPeers;
+        return peerList;
     }
 
     public void enableCommunicationWithUser(String alias, String port) {
