@@ -170,7 +170,7 @@ public class DecoderRunnable implements Runnable {
         return null;
     }
 
-    //TODO iplement android logic (deprecated)
+    //TODO implement android logic (deprecated)
     private void createThumbnail(char c, @NotNull String filename){
 
     }

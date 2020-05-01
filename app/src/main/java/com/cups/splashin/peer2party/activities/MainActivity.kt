@@ -13,11 +13,11 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.cups.splashin.peer2party.MainActivityViewModel
 import com.cups.splashin.peer2party.PeerTransaction
 import com.cups.splashin.peer2party.R
 import com.cups.splashin.peer2party.fragments.ChatFragment
 import com.cups.splashin.peer2party.fragments.PeerListFragment
-import com.cups.splashin.peer2party.viewmodels.MainActivityViewModel
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode

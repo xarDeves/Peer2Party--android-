@@ -26,13 +26,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cups.splashin.peer2party.MainActivityViewModel
 import com.cups.splashin.peer2party.R
 import com.cups.splashin.peer2party.adapters.ChatRecyclerAdapter
 import com.cups.splashin.peer2party.data.EntityDataClass
 import com.cups.splashin.peer2party.fetchDateTime
 import com.cups.splashin.peer2party.functionality.Saver
 import com.cups.splashin.peer2party.functionality.Sender
-import com.cups.splashin.peer2party.viewmodels.MainActivityViewModel
 import kotlinx.android.synthetic.main.chat_fragment.*
 import java.io.File
 import java.io.InputStream

@@ -1,5 +1,6 @@
 package com.cups.splashin.peer2party.networker.functionality;
 
+
 import android.util.Log;
 
 import com.cups.splashin.peer2party.networker.functionality.execution.ExecutionPoolRunnable;
@@ -15,7 +16,6 @@ import com.cups.splashin.peer2party.networker.networking.singleton.SingletonNetw
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 
 //TODO other than refactoring to kotlin, refactor the file tree as a final step for v1.0 completion
 class Model {
@@ -28,8 +28,10 @@ class Model {
     private final Object findPeersLock = new Object();
     private final Object decoderLock = new Object();
     private Object swingWorkerLock;
+    private String ipAddress;
 
-    Model(String username, Object swingWorkerLock) {
+    Model(String username, Object swingWorkerLock, String ipAddress) {
+        this.ipAddress = ipAddress;
         initializeServerVariables(username, swingWorkerLock);
     }
 
@@ -70,12 +72,12 @@ class Model {
     private String getTrueOutputAddress() throws IOException {
         //credit later
         //https://stackoverflow.com/a/2381398/10007109
-        Socket s = new Socket("www.google.com", 80);
+        /*Socket s = new Socket("www.google.com", 80);
         String address = s.getLocalAddress().getHostAddress();
-        s.close();
+        s.close();*/
 
-        Log.d("networker","Model: network address is " + address);
-        return address;
+        Log.d("networker", "Model: network address is " + ipAddress);
+        return ipAddress;
     }
 
     private void startBroadcastingFindPeersThread() {
@@ -106,7 +108,7 @@ class Model {
         ioData.pushElementOutboundDataQueue(StaticHelper.convertLongToByteArray(length));
         ioData.pushElementOutboundDataQueue(payload);                     //testing only
         Broadcaster.closePeerMsgSocket();
-        Log.d("networker","Main thread: OutboundQueue len is " + ioData.getQueueLengthOutboundDataQueue());     //testing only
+        Log.d("networker", "Main thread: OutboundQueue len is " + ioData.getQueueLengthOutboundDataQueue());     //testing only
     }
 
     String[][] getAllNodeAliasPort() {

@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.cups.splashin.peer2party.MainActivityViewModel
 import com.cups.splashin.peer2party.R
 import com.cups.splashin.peer2party.adapters.PeersRecyclerAdapter
-import com.cups.splashin.peer2party.viewmodels.MainActivityViewModel
 
 
 //TODO fetch clicked users

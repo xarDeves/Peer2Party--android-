@@ -17,8 +17,8 @@ public class Presenter {
 
     private LinkedList<String> peerList;
 
-    public Presenter(String username, Object swingWorkerLock) {
-        this.model = new Model(username, swingWorkerLock);
+    public Presenter(String username, Object swingWorkerLock, String ipAddress) {
+        this.model = new Model(username, swingWorkerLock, ipAddress);
         this.model.startNetworking();
 
         peerList = new LinkedList<>();

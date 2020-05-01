@@ -1,7 +1,10 @@
-package com.cups.splashin.peer2party.viewmodels
+package com.cups.splashin.peer2party
 
 import android.app.Application
+import android.content.Context.WIFI_SERVICE
 import android.graphics.BitmapFactory
+import android.net.wifi.WifiManager
+import android.text.format.Formatter
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
@@ -41,6 +44,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     //init fragments
     val fragmentA = ChatFragment()
     val fragmentB = PeerListFragment()
+    private lateinit var ipAddress: String
 
     //for PeerList fragment
     //var peerList = mutableListOf<String>()
@@ -55,7 +59,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             dao.insert(entity)
         }
     }
-
     fun fetchPeers() {
         peers = presenter.peerNamesAndPortsPanels
         Log.d("fuck", "viewmodel's fetchPeers called")
@@ -65,12 +68,18 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     fun connect(ID: String) = Thread {
         val swingWorkerLock = Any()
-        presenter = Presenter(ID, swingWorkerLock)
+
+        presenter = Presenter(ID, swingWorkerLock, ipAddress)
     }.start()
 
     init {
         repository = Repository(dao)
         allMessages = repository.allMessages
+
+        val wifiMgr = application.getSystemService(WIFI_SERVICE) as WifiManager?
+        val wifiInfo = wifiMgr!!.connectionInfo
+        val ip = wifiInfo.ipAddress
+        ipAddress = Formatter.formatIpAddress(ip)
 
 
 /*Thread {
