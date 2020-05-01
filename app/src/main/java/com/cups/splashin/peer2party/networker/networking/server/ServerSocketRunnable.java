@@ -1,6 +1,8 @@
 package com.cups.splashin.peer2party.networker.networking.server;
 
 
+import android.util.Log;
+
 import com.cups.splashin.peer2party.networker.helper.StaticHelper;
 import com.cups.splashin.peer2party.networker.networking.singleton.SingletonNetworkData;
 
@@ -24,7 +26,7 @@ public class ServerSocketRunnable implements Runnable {
     public void run() {
         while (true) {
             try {
-                System.out.println("ServerSocket Thread: Waiting for somebody... So lonely...");
+                Log.d("networker","ServerSocket Thread: Waiting for somebody... So lonely...");
                 Socket s = socket.accept();
 
                 /*if the IP & port already exist within the list,
@@ -34,11 +36,11 @@ public class ServerSocketRunnable implements Runnable {
 
                 if (networkData.containsIP(s.getInetAddress().toString())
                         && networkData.containsPORT(s.getPort())) {
-                    System.out.println("ServerSocket Thread: Found duplicate, closing connection...");
+                    Log.d("networker","ServerSocket Thread: Found duplicate, closing connection...");
                     socket.close();
 
                 } else {
-                    System.out.println("ServerSocket Thread: User connected! Appending to list!"); // for debug only
+                    Log.d("networker", "ServerSocket Thread: User connected! Appending to list!"); // for debug only
 
                     BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
                     s.setSoTimeout(1000);

@@ -1,5 +1,7 @@
 package com.cups.splashin.peer2party.networker.functionality;
 
+import android.util.Log;
+
 import com.cups.splashin.peer2party.networker.functionality.execution.ExecutionPoolRunnable;
 import com.cups.splashin.peer2party.networker.helper.StaticHelper;
 import com.cups.splashin.peer2party.networker.networking.codec.DecoderRunnable;
@@ -34,9 +36,9 @@ class Model {
     void startNetworking() {
         startDecoderThread();
         startServerSocketThread();
-        startBroadcastingFindPeersThread();
-        startBroadcastingFindMsgrThread();
         startExecutorPoolThread();
+        startBroadcastingFindMsgrThread();
+        startBroadcastingFindPeersThread();
     }
 
     private void initializeServerVariables(String username, Object swingWorkerLock) {
@@ -72,7 +74,7 @@ class Model {
         String address = s.getLocalAddress().getHostAddress();
         s.close();
 
-        System.out.println("Model: network address is " + address);
+        Log.d("networker","Model: network address is " + address);
         return address;
     }
 
@@ -104,7 +106,7 @@ class Model {
         ioData.pushElementOutboundDataQueue(StaticHelper.convertLongToByteArray(length));
         ioData.pushElementOutboundDataQueue(payload);                     //testing only
         Broadcaster.closePeerMsgSocket();
-        System.out.println("Main thread: OutboundQueue len is " + ioData.getQueueLengthOutboundDataQueue());     //testing only
+        Log.d("networker","Main thread: OutboundQueue len is " + ioData.getQueueLengthOutboundDataQueue());     //testing only
     }
 
     String[][] getAllNodeAliasPort() {

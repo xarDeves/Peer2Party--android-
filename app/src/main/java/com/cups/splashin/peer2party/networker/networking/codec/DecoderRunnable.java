@@ -1,5 +1,7 @@
 package com.cups.splashin.peer2party.networker.networking.codec;
 
+import android.util.Log;
+
 import com.cups.splashin.peer2party.networker.networking.singleton.SingletonIOData;
 
 import org.jetbrains.annotations.NotNull;
@@ -38,12 +40,12 @@ public class DecoderRunnable implements Runnable {
             synchronized (decoderLock){
                 while(!ioData.hasElementsInboundData()){
                     try {
-                        System.out.println("Decoder thread: Waiting for inboundData to have elements...");
+                        Log.d("networker","Decoder thread: Waiting for inboundData to have elements...");
                         decoderLock.wait();
                     } catch (InterruptedException e) {}
                 }
             }
-            System.out.println("Decoder thread: Starting decoding");
+            Log.d("networker","Decoder thread: Starting decoding");
             decode();
         }
     }
@@ -109,7 +111,7 @@ public class DecoderRunnable implements Runnable {
     }
 
     private void decodeData(@NotNull String key){
-        System.out.println("Decoder thread: decoding " + key);
+        Log.d("networker","Decoder thread: decoding " + key);
         switch(key.charAt(35)){
             case('t'):
                 decodeText(key);
@@ -132,7 +134,7 @@ public class DecoderRunnable implements Runnable {
         }
 
         ioData.insertMessageProcessed(t.toString(), "Placeholder", null, 't'); // change later
-        System.out.println("Decoder thread: got text" + t);
+        Log.d("networker","Decoder thread: got text" + t);
     }
 
 

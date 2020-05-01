@@ -1,5 +1,7 @@
 package com.cups.splashin.peer2party.networker.networking.server;
 
+import android.util.Log;
+
 import com.cups.splashin.peer2party.networker.networking.singleton.SingletonIOData;
 import com.cups.splashin.peer2party.networker.networking.singleton.SingletonNetworkData;
 
@@ -37,6 +39,7 @@ public class BroadcastFindPeersRunnable extends Broadcaster implements Runnable 
         int i = 0;
         while (true) {
             if ((i % 30) == 0) {
+                i = 0;
                 for (int j = 0; j < 3; j++) {
                     try {
                         broadcastStr(broadcastSocket,
@@ -68,13 +71,13 @@ public class BroadcastFindPeersRunnable extends Broadcaster implements Runnable 
         boolean port_check = networkData.containsPORT(port);
 
         if (!ip_check || !port_check) {
-            System.out.println("Broadcast Thread: Appended to list & active sockets!");
+            Log.d("networker","Broadcast Thread: Appended to list & active sockets!");
 
             try {
                 Socket s = new Socket(ip, port);                         //sends alias
                 PrintWriter pr = new PrintWriter(s.getOutputStream());  //sends alias
 
-                System.out.println("Broadcast Thread: Sending alias");
+                Log.d("networker","Broadcast Thread: Sending alias");
 
                 s.setSoTimeout(1000);
                 pr.println(networkData.getALIAS());                        //sends alias
