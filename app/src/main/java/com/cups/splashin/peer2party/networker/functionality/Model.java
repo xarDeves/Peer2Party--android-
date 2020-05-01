@@ -13,12 +13,18 @@ import com.cups.splashin.peer2party.networker.networking.server.ServerSocketRunn
 import com.cups.splashin.peer2party.networker.networking.singleton.SingletonIOData;
 import com.cups.splashin.peer2party.networker.networking.singleton.SingletonNetworkData;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedList;
 
 //TODO other than refactoring to kotlin, refactor the file tree as a final step for v1.0 completion
-class Model {
+public class Model {
+
     private ServerSocket serverSocket;
 
     private SingletonNetworkData networkData;
@@ -26,12 +32,13 @@ class Model {
 
     private final Object findPeersLock = new Object();
     private final Object decoderLock = new Object();
-    private Object swingWorkerLock;
     private String ipAddress;
 
-    Model(String username, Object swingWorkerLock, String ipAddress) {
+    private LinkedList<String> peerList;
+
+    public Model(String username, String ipAddress) {
         this.ipAddress = ipAddress;
-        initializeServerVariables(username, swingWorkerLock);
+        initializeServerVariables(username);
     }
 
     void startNetworking() {
@@ -42,7 +49,57 @@ class Model {
         startBroadcastingFindPeersThread();
     }
 
-    private void initializeServerVariables(String username, Object swingWorkerLock) {
+    public void sendMessage(char type, @NotNull String s) {
+        sendMessage((byte) type, s.getBytes());
+        ioData.insertMessageProcessed(s, networkData.getALIAS(), null, 't');
+    }
+
+    public LinkedList<String> getPeerNamesAndPortsPanels() {
+        String[][] peerData = networkData.getAllNodeAliasPort();
+
+        if (peerData == null) {
+            return null;
+        }
+
+        Arrays.sort(peerData, new Comparator<String[]>() {
+            @Override
+            public int compare(final String[] s1, final String[] s2) {
+                return s2[0].compareTo(s1[0]);
+            }
+        });
+
+        //TODO modify this guy...every time i rotate the screen "newPeers" is empty, why not return peerList?
+        //TODO also...if you could make this a 2D List you've got a free blowjob <3 (tho on kotlin refactoring will be obsolete)
+
+       /*
+        LinkedList<String> newPeers = new LinkedList<>();
+
+        for (String[] strArr : peerData) {
+            if (!peerList.contains(strArr[0]) || !peerList.contains(strArr[1])) {
+                peerList.add(strArr[0]);
+                peerList.add(strArr[1]);
+
+                //newPeers.add(strArr[0]);
+                //newPeers.add(strArr[1]);
+            }
+        }
+        */
+
+        return peerList;
+    }
+
+    public void enableCommunicationWithUser(String alias, String port) {
+        System.out.println("Main thread: Model: Adding user " + alias + port);
+        //should add him to a inputoutput communication list
+    }
+
+    public void disableCommunicationWithUser(String alias, String port) {
+        System.out.println("Main thread: Model: Removing user " + alias + port);
+        //should remove him to a inputoutput communication list
+    }
+
+
+    private void initializeServerVariables(String username) {
         username = StaticHelper.convertToLegalName(username);
         //TODO that guy is redundant:
         if (username.equals("")) {
@@ -59,7 +116,6 @@ class Model {
                     username);
 
             ioData = SingletonIOData.getInstance();
-            this.swingWorkerLock = swingWorkerLock;
 
             networkData.appendNodeData(networkData.getIP(), networkData.getTcpPort(), username);
         } catch (IOException ex) {
@@ -68,7 +124,7 @@ class Model {
         }
     }
 
-    private String getTrueOutputAddress() throws IOException {
+    private String getTrueOutputAddress() {
         //credit later
         //https://stackoverflow.com/a/2381398/10007109
         /*Socket s = new Socket("www.google.com", 80);
@@ -92,7 +148,7 @@ class Model {
     }
 
     private void startDecoderThread() {
-        new Thread(new DecoderRunnable(decoderLock, swingWorkerLock)).start();
+        new Thread(new DecoderRunnable(decoderLock)).start();
     }
 
     private void startExecutorPoolThread() {
@@ -110,7 +166,4 @@ class Model {
         Log.d("networker", "Main thread: OutboundQueue len is " + ioData.getQueueLengthOutboundDataQueue());     //testing only
     }
 
-    String[][] getAllNodeAliasPort() {
-        return networkData.getAllNodeAliasPort();
-    }
 }

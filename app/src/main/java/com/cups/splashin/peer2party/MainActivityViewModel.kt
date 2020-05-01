@@ -15,7 +15,7 @@ import com.cups.splashin.peer2party.data.EntityDataClass
 import com.cups.splashin.peer2party.data.Repository
 import com.cups.splashin.peer2party.fragments.ChatFragment
 import com.cups.splashin.peer2party.fragments.PeerListFragment
-import com.cups.splashin.peer2party.networker.functionality.Presenter
+import com.cups.splashin.peer2party.networker.functionality.Model
 import kotlinx.coroutines.launch
 import java.io.DataInputStream
 import java.io.InputStream
@@ -37,7 +37,7 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private var buffer: ByteArray = ByteArray(512)
     private lateinit var messageByte: ByteArray
     private lateinit var inputStream: InputStream
-    lateinit var presenter: Presenter
+    lateinit var model: Model
     var screenH: Int? = null
     var screenW: Int? = null
 
@@ -59,17 +59,17 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
             dao.insert(entity)
         }
     }
+
     fun fetchPeers() {
-        peers = presenter.peerNamesAndPortsPanels
+        peers = model.peerNamesAndPortsPanels
         Log.d("fuck", "viewmodel's fetchPeers called")
         Log.d("fuck", "viewmodel's list: $peers")
 
     }
 
     fun connect(ID: String) = Thread {
-        val swingWorkerLock = Any()
 
-        presenter = Presenter(ID, swingWorkerLock, ipAddress)
+        model = Model(ID, ipAddress)
     }.start()
 
     init {
@@ -83,9 +83,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
 
 /*Thread {
-
-    val swingWorkerLock = Any()
-    Presenter(username, swingWorkerLock)
 
     //for testing purposes only, cleanup after networker's completion
     /*while (true) {
