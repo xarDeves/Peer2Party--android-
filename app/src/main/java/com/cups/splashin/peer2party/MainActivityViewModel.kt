@@ -34,6 +34,8 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     private lateinit var dataIs: DataInputStream
     private var identifier: Int? = null
 
+    private lateinit var wifiMgr: WifiManager
+
     private var buffer: ByteArray = ByteArray(512)
     private lateinit var messageByte: ByteArray
     private lateinit var inputStream: InputStream
@@ -44,7 +46,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
     //init fragments
     val fragmentA = ChatFragment()
     val fragmentB = PeerListFragment()
-    private lateinit var ipAddress: String
 
     //for PeerList fragment
     //var peerList = mutableListOf<String>()
@@ -67,20 +68,27 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
 
     }
 
-    fun connect(ID: String) = Thread {
+    fun connect(ID: String) {
 
-        model = Model(ID, ipAddress)
-    }.start()
+        val wifiInfo = wifiMgr.connectionInfo
+        val ip = wifiInfo.ipAddress
+        val ipAddress = Formatter.formatIpAddress(ip)
+
+        Log.d("fuck", ipAddress)
+        if (ipAddress != "0.0.0.0") {
+            Thread {
+                model = Model(ID, ipAddress)
+            }.start()
+        } else {
+            throw IllegalArgumentException("Not connected to network")
+        }
+    }
 
     init {
         repository = Repository(dao)
         allMessages = repository.allMessages
 
-        val wifiMgr = application.getSystemService(WIFI_SERVICE) as WifiManager?
-        val wifiInfo = wifiMgr!!.connectionInfo
-        val ip = wifiInfo.ipAddress
-        ipAddress = Formatter.formatIpAddress(ip)
-
+        wifiMgr = application.getSystemService(WIFI_SERVICE) as WifiManager
 
 /*Thread {
 

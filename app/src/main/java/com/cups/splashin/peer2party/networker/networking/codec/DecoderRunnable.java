@@ -129,7 +129,7 @@ public class DecoderRunnable implements Runnable {
         }
 
         ioData.insertMessageProcessed(t.toString(), "Placeholder", null, 't'); // change later
-        Log.d("networker", "Decoder thread: got text" + t);
+        Log.d("fuck", "Decoder thread: got text" + t);
     }
 
 

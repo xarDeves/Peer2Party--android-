@@ -13,9 +13,11 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager.widget.ViewPager
 import com.cups.splashin.peer2party.MainActivityViewModel
 import com.cups.splashin.peer2party.PeerTransaction
 import com.cups.splashin.peer2party.R
+import com.cups.splashin.peer2party.adapters.ViewPagerAdapter
 import com.cups.splashin.peer2party.fragments.ChatFragment
 import com.cups.splashin.peer2party.fragments.PeerListFragment
 import org.greenrobot.eventbus.EventBus
@@ -81,22 +83,16 @@ class MainActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
 
-        if (fragmentManager.backStackEntryCount == 1) {
-            if (doubleBackCheck) {
-                super.onBackPressed()
-                finishAffinity()
-                exitProcess(0)
-            }
-
-            this.doubleBackCheck = true
-            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
-
-            Handler().postDelayed({ doubleBackCheck = false }, 2000)
-
-        } else {
+        if (doubleBackCheck) {
             super.onBackPressed()
-
+            finishAffinity()
+            exitProcess(0)
         }
+
+        doubleBackCheck = true
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
+
+        Handler().postDelayed({ doubleBackCheck = false }, 2000)
 
     }
 
@@ -122,7 +118,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun replacePortrait(fragmentA: ChatFragment) {
+    /*private fun replacePortrait(fragmentA: ChatFragment) {
 
         transactionManager.replace(
             R.id.chatFrame,
@@ -132,7 +128,7 @@ class MainActivity : AppCompatActivity() {
         transactionManager.commit()
         fragmentManager.executePendingTransactions()
 
-    }
+    }*/
 
     private fun addLandscape(fragmentA: ChatFragment, fragmentB: PeerListFragment) {
 
@@ -148,7 +144,6 @@ class MainActivity : AppCompatActivity() {
             "B"
         )
 
-        transactionManager.addToBackStack("fragmentStack")
         transactionManager.commit()
         fragmentManager.executePendingTransactions()
     }
@@ -160,7 +155,6 @@ class MainActivity : AppCompatActivity() {
             fragmentA,
             "A"
         )
-        transactionManager.addToBackStack("fragmentStack")
         transactionManager.commit()
         fragmentManager.executePendingTransactions()
 
@@ -202,7 +196,11 @@ class MainActivity : AppCompatActivity() {
             ID = intent.extras.getString("ID")
             bundle.putString("ID", ID)
             (viewModel as MainActivityViewModel).fragmentA.arguments = bundle
-            (viewModel as MainActivityViewModel).connect(ID)
+            try {
+                (viewModel as MainActivityViewModel).connect(ID)
+            } catch (t: Throwable) {
+                Toast.makeText(this, t.message, Toast.LENGTH_LONG).show()
+            }
         }
 
         fragmentManager = supportFragmentManager
@@ -210,11 +208,12 @@ class MainActivity : AppCompatActivity() {
 
         //are you feeling it now mr. krabs? :
         if (findViewById<LinearLayout>(R.id.activity_portrait) != null) {
-            if (savedInstanceState == null) {
-                addPortrait((viewModel as MainActivityViewModel).fragmentA)
-            } else {
-                replacePortrait((viewModel as MainActivityViewModel).fragmentA)
-            }
+            val viewPagerAdapter = ViewPagerAdapter(
+                fragmentManager,
+                viewModel as MainActivityViewModel
+            )
+            val viewPager: ViewPager = findViewById(R.id.viewpager)
+            viewPager.adapter = viewPagerAdapter
         } else if (findViewById<LinearLayout>(R.id.activity_landscape) != null) {
             if (savedInstanceState == null) {
                 addLandscape(

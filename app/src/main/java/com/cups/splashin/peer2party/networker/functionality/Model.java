@@ -72,8 +72,6 @@ public class Model {
 
         //TODO modify this guy...every time i rotate the screen "newPeers" is empty, why not return peerList?
         //TODO also...if you could make this a 2D List you've got a free blowjob <3 (tho on kotlin refactoring will be obsolete)
-
-
         LinkedList<String> newPeers = new LinkedList<>();
 
         for (String[] strArr : peerData) {

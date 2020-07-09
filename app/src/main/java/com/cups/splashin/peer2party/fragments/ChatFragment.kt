@@ -4,7 +4,6 @@ package com.cups.splashin.peer2party.fragments
 import android.app.Activity.RESULT_OK
 import android.content.ContentResolver
 import android.content.Intent
-import android.content.res.Configuration
 import android.database.Cursor
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -184,27 +183,27 @@ class ChatFragment : Fragment() {
             }
         } else if (requestCode == 2) {
             //if (resultCode == RESULT_OK) {
-                //activity!!.contentResolver.notifyChange(imageUri, null);
-                val bitmap = android.provider.MediaStore.Images.Media.getBitmap(
-                    activity!!.contentResolver,
-                    imageUri
-                )
-                Thread {
-                    (viewModel as MainActivityViewModel).insertEntity(
-                        EntityDataClass(
-                            3,
-                            imageUri.toString(),
-                            fetchDateTime(),
-                            null,
-                            android.text.format.Formatter.formatFileSize(
-                                activity!!,
-                                Saver.saveImage(bitmap).toLong()
-                            )
+            //activity!!.contentResolver.notifyChange(imageUri, null);
+            val bitmap = android.provider.MediaStore.Images.Media.getBitmap(
+                activity!!.contentResolver,
+                imageUri
+            )
+            Thread {
+                (viewModel as MainActivityViewModel).insertEntity(
+                    EntityDataClass(
+                        3,
+                        imageUri.toString(),
+                        fetchDateTime(),
+                        null,
+                        android.text.format.Formatter.formatFileSize(
+                            activity!!,
+                            Saver.saveImage(bitmap).toLong()
                         )
                     )
-                }.start()
+                )
+            }.start()
 
-           // }
+            // }
         }
     }
 
@@ -226,7 +225,7 @@ class ChatFragment : Fragment() {
         openVideoBtn = view.findViewById(R.id.openVideo)
         selectMode = view.findViewById(R.id.selectCaptureMode)
         usernameHolder = view.findViewById(R.id.username)
-        recipientsBtn = view.findViewById(R.id.recipients)
+        //recipientsBtn = view.findViewById(R.id.recipients)
 
         //recycler setup:
         recycler = view.findViewById(R.id.chatRecycler)
@@ -236,7 +235,7 @@ class ChatFragment : Fragment() {
         chatAdapter =
             ChatRecyclerAdapter(activity!!)
         recycler.adapter = chatAdapter
-        
+
         usernameHolder.text = arguments!!.getString("ID")
 
         //goto RecyclerAdapter
@@ -250,19 +249,20 @@ class ChatFragment : Fragment() {
         /*chatAdapter.setScreenDimensions(
             (viewModel as MainActivityViewModel).screenW!!,
             (viewModel as MainActivityViewModel).screenH!!
-        )*/
+        )
 
         val orientation = resources.configuration.orientation
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             recipientsBtn.visibility = View.GONE
         }
+         */
 
         //for send text:
         sendBtn.setOnClickListener {
             initTextSend()
         }
 
-        recipientsBtn.setOnClickListener {
+        /*recipientsBtn.setOnClickListener {
             val fragmentManager = activity!!.supportFragmentManager
             val transactionManager = fragmentManager.beginTransaction()
             transactionManager.add(
@@ -275,7 +275,7 @@ class ChatFragment : Fragment() {
 
             //Log.d("fuck", fragmentManager.backStackEntryCount.toString())
 
-        }
+        }*/
 
         selectFilebtn.setOnClickListener {
 
