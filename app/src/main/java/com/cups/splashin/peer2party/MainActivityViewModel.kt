@@ -74,7 +74,6 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         val ip = wifiInfo.ipAddress
         val ipAddress = Formatter.formatIpAddress(ip)
 
-        Log.d("fuck", ipAddress)
         if (ipAddress != "0.0.0.0") {
             Thread {
                 model = Model(ID, ipAddress)

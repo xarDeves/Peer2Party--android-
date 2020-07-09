@@ -13,8 +13,7 @@ import com.cups.splashin.peer2party.MainActivityViewModel
 import com.cups.splashin.peer2party.R
 import com.cups.splashin.peer2party.adapters.PeersRecyclerAdapter
 
-
-//TODO fetch clicked users
+//TODO fetch clicked users, retain state on orientation change
 class PeerListFragment : Fragment() {
 
     private lateinit var viewModel: MainActivityViewModel
@@ -39,7 +38,7 @@ class PeerListFragment : Fragment() {
         peersAdapter = PeersRecyclerAdapter(activity!!)
         recycler.adapter = peersAdapter
 
-        Log.d("fuck","create view")
+        Log.d("fuck", "create view")
 
         viewModel.peers?.let { peersAdapter.setPeers(it) }
 

@@ -30,7 +30,6 @@ class PeersRecyclerAdapter internal constructor(
     fun setPeers(peers: LinkedList<String>) {
 
         this.peerList = peers
-        Log.d("fuck", "recycler updated")
         Log.d("fuck", "recycler peerList: $peerList")
 
         notifyDataSetChanged()

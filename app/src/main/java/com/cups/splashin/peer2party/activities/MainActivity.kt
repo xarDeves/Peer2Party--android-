@@ -180,6 +180,7 @@ class MainActivity : AppCompatActivity() {
         (viewModel as MainActivityViewModel).fetchPeers()
         Log.d("fuck", "setting peers on fragment")
         (viewModel as MainActivityViewModel).fragmentB.peersAdapter.setPeers((viewModel as MainActivityViewModel).peers!!)
+        Log.d("fuck", "peers set")
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
