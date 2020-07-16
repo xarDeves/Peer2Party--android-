@@ -174,6 +174,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    //TODO unsubscribe onStop
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     fun onEvent(event: PeerTransaction) {
         Log.d("fuck", "fetching peers")

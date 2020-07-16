@@ -163,6 +163,7 @@ public class SingletonNetworkData {
             ipPortList.pushElement(ip, port);
             PeerTransaction event = new PeerTransaction();
             Log.d("fuck", "SingletonNetworkData posted");
+            //TODO check .post()
             EventBus.getDefault().postSticky(event);
         }
     }
