@@ -1,24 +1,25 @@
 package com.cups.splashin.peer2party.android.app.fragments
 
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
-import android.content.ContentResolver
 import android.content.Intent
-import android.database.Cursor
+import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.media.MediaRecorder
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.StrictMode
+import android.os.SystemClock
 import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TableLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -33,22 +34,32 @@ import com.cups.splashin.peer2party.android.app.fetchDateTime
 import com.cups.splashin.peer2party.android.app.functionality.Saver
 import com.cups.splashin.peer2party.android.app.functionality.Sender
 import kotlinx.android.synthetic.main.chat_fragment.*
+import kotlinx.coroutines.Job
 import java.io.File
 import java.io.InputStream
+
 
 //TODO refactor the "init" functions, saver, sender objects, and path handling/filtering (waiting for netcode)
 class ChatFragment : Fragment() {
 
+    lateinit var recTimer: Job
+
+    private val LOG_TAG = "AudioRecordTest"
+    private val REQUEST_RECORD_AUDIO_PERMISSION = 200
+
     private lateinit var layoutManager: LinearLayoutManager
+
     private val IMAGE_PICK_CODE = 1
     private val IMAGE_CAPTURE_CODE = 2
     private val VIDEO_CAPTURE_CODE = 3
 
-    var clicked = false
+    private var clicked = false
     private lateinit var imageUri: Uri
 
+    private lateinit var audioRec: MediaRecorder
 
-    private var typeIndentifier: Int? = null
+
+    private var typeIdentifier: Int? = null
     private lateinit var explorerStream: InputStream
     private lateinit var viewModel: ViewModel
     private lateinit var recycler: RecyclerView
@@ -57,14 +68,33 @@ class ChatFragment : Fragment() {
     private lateinit var openCaptureBtn: Button
     private lateinit var openImageBtn: Button
     private lateinit var openVideoBtn: Button
+    private lateinit var recVoiceButton: ToggleButton
     private lateinit var selectMode: TableLayout
     private lateinit var textEntry: TextView
     private lateinit var usernameHolder: TextView
+    private lateinit var recTable: TableLayout
+    private lateinit var cancelRecButton: Button
+    private lateinit var timeRecordedChrono: Chronometer
     private lateinit var chatAdapter: ChatRecyclerAdapter
 
-
-    lateinit var recipientsBtn: Button
     private lateinit var sendBtn: Button
+
+    // Requesting permission to RECORD_AUDIO
+    private var permissionToRecordAccepted = false
+    private var permissions: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO)
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionToRecordAccepted = if (requestCode == REQUEST_RECORD_AUDIO_PERMISSION) {
+            grantResults[0] == PackageManager.PERMISSION_GRANTED
+        } else {
+            false
+        }
+    }
 
     private fun initTextSend() {
 
@@ -72,7 +102,8 @@ class ChatFragment : Fragment() {
         Thread {
             if (Sender.sendText(textToSend)) {
                 (viewModel as MainActivityViewModel).insertEntity(
-                    EntityDataClass(1, textToSend,
+                    EntityDataClass(
+                        1, textToSend,
                         fetchDateTime()
                     )
                 )
@@ -91,6 +122,7 @@ class ChatFragment : Fragment() {
     private fun initImageSend(path: String) {
 
         Thread {
+            Log.d("fuck", path)
             val size = Sender.sendImage(BitmapFactory.decodeStream(explorerStream))
             (viewModel as MainActivityViewModel).insertEntity(
                 EntityDataClass(
@@ -127,89 +159,68 @@ class ChatFragment : Fragment() {
 
     private fun initAudioSend() {
         Thread {
-            Sender.sendAudio(typeIndentifier!!, explorerStream)
+            Sender.sendAudio(typeIdentifier!!, explorerStream)
         }.start()
     }
 
-    //TODO make everything dynamic...obviously
-    //works only for images:
-    private fun realPathImage(
-        contentUri: Uri?,
-        resolver: ContentResolver
-    ): String? {
-        var cursor: Cursor = resolver.query(contentUri, null, null, null, null)
-        cursor.moveToFirst()
-        var documentId: String = cursor.getString(0)
-        documentId = documentId.substring(documentId.lastIndexOf(":") + 1)
-        cursor.close()
-        cursor = resolver.query(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null
-            , MediaStore.Images.Media._ID + " = ? ", arrayOf(documentId), null
-        )
-        cursor.moveToFirst()
-        val path: String = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA))
-        cursor.close()
-        return path
-    }
 
+    @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        val uri: Uri? = data?.data
+        val contentResolver = activity!!.contentResolver
+        if (uri != null) {
+            val type = contentResolver.getType(uri)
+            explorerStream = activity!!.contentResolver.openInputStream(uri)
+            if (requestCode == 1) {
+                if (resultCode == RESULT_OK) {
 
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
+                    when {
+                        "image" in type -> {
+                            //initTextSend()
+                            initImageSend(uri.toString())
+                        }
+                        "wav" in type -> {
+                            Log.d("fuck", "attempting to send wav")
+                            typeIdentifier = 2
+                            initAudioSend()
 
-                val uri: Uri = data!!.data
-                val contentResolver = activity!!.contentResolver
-                val absoluteUri = realPathImage(uri, contentResolver)
-                val type = contentResolver.getType(uri)
-                explorerStream = activity!!.contentResolver.openInputStream(uri)
+                        }
+                        "mp3" in type -> {
+                            Log.d("fuck", "attempting to send mp3")
+                            typeIdentifier = 3
+                            initAudioSend()
 
-                when {
-                    "image" in type -> {
-                        //initTextSend()
-                        initImageSend(absoluteUri!!)
-                    }
-                    "wav" in type -> {
-                        Log.d("fuck", "attempting to send wav")
-                        typeIndentifier = 2
-                        initAudioSend()
-
-                    }
-                    "mp3" in type -> {
-                        Log.d("fuck", "attempting to send mp3")
-                        typeIndentifier = 3
-                        initAudioSend()
-
+                        }
                     }
                 }
-            }
-        } else if (requestCode == 2) {
-            //if (resultCode == RESULT_OK) {
-            //activity!!.contentResolver.notifyChange(imageUri, null);
-            val bitmap = android.provider.MediaStore.Images.Media.getBitmap(
-                activity!!.contentResolver,
-                imageUri
-            )
-            Thread {
-                (viewModel as MainActivityViewModel).insertEntity(
-                    EntityDataClass(
-                        3,
-                        imageUri.toString(),
-                        fetchDateTime(),
-                        null,
-                        android.text.format.Formatter.formatFileSize(
-                            activity!!,
-                            Saver.saveImage(bitmap).toLong()
-                        )
+            } else if (requestCode == 2) {
+                if (resultCode == RESULT_OK) {
+                    //activity!!.contentResolver.notifyChange(imageUri, null);
+                    val bitmap = MediaStore.Images.Media.getBitmap(
+                        activity!!.contentResolver,
+                        uri
                     )
-                )
-            }.start()
-
-            // }
+                    Thread {
+                        (viewModel as MainActivityViewModel).insertEntity(
+                            EntityDataClass(
+                                3,
+                                uri.toString(),
+                                fetchDateTime(),
+                                null,
+                                android.text.format.Formatter.formatFileSize(
+                                    activity!!,
+                                    Saver.saveImage(bitmap).toLong()
+                                )
+                            )
+                        )
+                    }.start()
+                }
+            }
         }
     }
 
-
+    @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -219,15 +230,20 @@ class ChatFragment : Fragment() {
 
         viewModel = ViewModelProvider(activity!!).get(MainActivityViewModel::class.java)
 
+        ActivityCompat.requestPermissions(activity!!, permissions, REQUEST_RECORD_AUDIO_PERMISSION)
+
         selectFilebtn = view.findViewById(R.id.selectFile)
         textEntry = view.findViewById(R.id.textInput)
         sendBtn = view.findViewById(R.id.buttonSend)
         openCaptureBtn = view.findViewById(R.id.openCapture)
         openImageBtn = view.findViewById(R.id.openImage)
         openVideoBtn = view.findViewById(R.id.openVideo)
+        recVoiceButton = view.findViewById(R.id.recVoice)
         selectMode = view.findViewById(R.id.selectCaptureMode)
         usernameHolder = view.findViewById(R.id.username)
-        //recipientsBtn = view.findViewById(R.id.recipients)
+        recTable = view.findViewById(R.id.recTable)
+        cancelRecButton = view.findViewById(R.id.cancelRec)
+        timeRecordedChrono = view.findViewById(R.id.timeRecorded)
 
         //recycler setup:
         recycler = view.findViewById(R.id.chatRecycler)
@@ -264,20 +280,51 @@ class ChatFragment : Fragment() {
             initTextSend()
         }
 
-        /*recipientsBtn.setOnClickListener {
-            val fragmentManager = activity!!.supportFragmentManager
-            val transactionManager = fragmentManager.beginTransaction()
-            transactionManager.add(
-                R.id.chatFrame,
-                (viewModel as MainActivityViewModel).fragmentB,
-                "B"
-            )
-            transactionManager.addToBackStack("fragmentStack")
-            transactionManager.commit()
 
-            //Log.d("fuck", fragmentManager.backStackEntryCount.toString())
+        recVoiceButton.setOnCheckedChangeListener { _, isChecked ->
+            Log.d("fuck", isChecked.toString())
+            if (isChecked) {
+                if (!permissionToRecordAccepted) {
 
-        }*/
+                    audioRec = MediaRecorder().apply {
+                        setAudioSource(MediaRecorder.AudioSource.MIC)
+                        setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+                        setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+                    }
+
+                    timeRecordedChrono.base = SystemClock.elapsedRealtime()
+                    recTable.visibility = View.VISIBLE
+                    timeRecordedChrono.start()
+
+                    //using coroutine and TextView:
+                    /*recTable.visibility = View.VISIBLE
+                    recTimer = GlobalScope.launch(Default) {
+                        var secs = 1L
+                        var hours: Int
+                        var remainder: Int
+                        var mins: Int
+
+                        while (true) {
+                            withContext(Main) {
+                                hours = secs.toInt() / 3600
+                                remainder = secs.toInt() - hours * 3600
+                                mins = remainder / 60
+                                remainder -= mins * 60
+
+                                timeRecordedText.text = "$hours:$mins:$remainder"
+                            }
+                            secs++
+                            Thread.sleep(1000)
+                        }
+                    }*/
+
+                }
+
+            } else {
+                timeRecordedChrono.stop()
+                recTable.visibility = View.GONE
+            }
+        }
 
         selectFilebtn.setOnClickListener {
 

@@ -67,13 +67,12 @@ class MainActivityViewModel(application: Application) : AndroidViewModel(applica
         //TODO fetch from singleton
         //peers = model.peerNamesAndPortsPanels
         peers = netDataSingleton.allPeers
-        Log.d("fuck", "viewmodel's fetchPeers called")
-        Log.d("fuck", "viewmodel's list: $peers")
-
+        Log.d("fuck", "viewmodel's fetchPeers called: $peers")
     }
 
     fun connect(ID: String) {
 
+        // TODO method deprecated, refactor to Jetpack and manage multiple adapters (need to research this)
         val wifiInfo = wifiMgr.connectionInfo
         val ip = wifiInfo.ipAddress
         val ipAddress = Formatter.formatIpAddress(ip)

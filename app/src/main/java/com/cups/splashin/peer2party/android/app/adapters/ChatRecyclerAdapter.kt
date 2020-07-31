@@ -148,6 +148,8 @@ class ChatRecyclerAdapter internal constructor(
         return viewHolder
     }
 
+    // File checking won't work, after image deletion it still draws in the ImageView:
+    // TODO try with file.isFile() instead of file.exists()
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         when (holder.itemViewType) {
@@ -203,7 +205,7 @@ class ChatRecyclerAdapter internal constructor(
                     }
                 }
 
-                //hiding username if the same user sends multiple message at once (guess what. It doesn't work):
+                //hiding username if the same user sends multiple messages at once (guess what. It doesn't work):
                 /*if (messageArraySize!! > 1) {
                     if (allMessages[messageArraySize!! - 1].alias == allMessages[messageArraySize!! - 2].alias) {
                         holder.alias.visibility = View.GONE
@@ -267,23 +269,23 @@ class ChatRecyclerAdapter internal constructor(
             RECEIVE_IMAGE -> {
 
                 uri = allMessages[position].payload!!
-                file = File(uri)
 
-                if (file.exists()) {
+                //file = File(uri)
+                //if (file.exists()) {
 
-                    Glide.with(context)
-                        .load(uri)
-                        .override(500, 500)
-                        .fitCenter()
-                        .dontAnimate()
-                        .dontTransform()
-                        .into((holder as ImageReceivedViewHolder).imageView)
+                Glide.with(context)
+                    .load(uri)
+                    .override(500, 500)
+                    .fitCenter()
+                    .dontAnimate()
+                    .dontTransform()
+                    .into((holder as ImageReceivedViewHolder).imageView)
 
-                } else {
+                /*} else {
                     (holder as ImageReceivedViewHolder).imageView.setImageResource(
                         R.drawable.not_found
                     )
-                }
+                }*/
 
                 holder.alias.text =
                     context.getString(R.string.username, allMessages[position].alias)
@@ -335,22 +337,22 @@ class ChatRecyclerAdapter internal constructor(
 
                 //(holder as ImageSendViewHolder).imageView.setImageURI(Uri.parse((allMessages[position].payload)))
                 uri = allMessages[position].payload!!
-                file = File(uri)
 
-                if (file.absoluteFile.exists()) {
+                //file = File(uri)
+                //if (file.absoluteFile.exists()) {
 
-                    Glide.with(context)
-                        .load(uri)
-                        .override(500, 500)
-                        .fitCenter()
-                        .dontAnimate()
-                        .dontTransform()
-                        .into((holder as ImageSendViewHolder).imageView)
-                } else {
-                    (holder as ImageSendViewHolder).imageView.setImageResource(
-                        R.drawable.not_found
-                    )
-                }
+                Glide.with(context)
+                    .load(uri)
+                    .override(500, 500)
+                    .fitCenter()
+                    .dontAnimate()
+                    .dontTransform()
+                    .into((holder as ImageSendViewHolder).imageView)
+                /* } else {
+                     (holder as ImageSendViewHolder).imageView.setImageResource(
+                         R.drawable.not_found
+                     )
+                 }*/
 
                 holder.date.text = allMessages[position].date
                 holder.size.text = allMessages[position].size

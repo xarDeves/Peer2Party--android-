@@ -1,7 +1,5 @@
 package com.cups.splashin.peer2party.android.app.activities
 
-import android.app.Activity
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
@@ -9,7 +7,6 @@ import android.util.Log
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -39,33 +36,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var fragmentManager: FragmentManager
     private lateinit var transactionManager: androidx.fragment.app.FragmentTransaction
-
-
-    //i just copied this part from stack overflow because fuck this OS
-    //fuck my life, and fuck the reason why this is necessary.
-    //WHAT IS THE FUCKING PURPOSE OF MANIFEST PERMISSIONS THEN?
-    //FIX YOUR FUCKING SHIT GOOGLE, JESUS
-    private val REQUEST_EXTERNAL_STORAGE = 1
-    private val PERMISSIONS_STORAGE = arrayOf(
-        android.Manifest.permission.READ_EXTERNAL_STORAGE,
-        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-    )
-
-    private fun verifyStoragePermissions(activity: Activity?) {
-        // Check if we have write permission
-        val permission = ActivityCompat.checkSelfPermission(
-            activity!!,
-            android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-        )
-        if (permission != PackageManager.PERMISSION_GRANTED) {
-            // We don't have permission so prompt the user
-            ActivityCompat.requestPermissions(
-                activity,
-                PERMISSIONS_STORAGE,
-                REQUEST_EXTERNAL_STORAGE
-            )
-        }
-    }
 
     //this, as well as "ThumbnailMaker.kt" are most possibly deprecated
     //since minWidth won't work on ImageView i'm keeping it for the time being
@@ -184,14 +154,14 @@ class MainActivity : AppCompatActivity() {
         Log.d("fuck", "peers set")
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_activity)
 
         viewModel = ViewModelProvider(this).get(MainActivityViewModel::class.java)
 
-        //in order to save to device's storage:
-        verifyStoragePermissions(this)
+
         fetchScreenDimensions()
 
         //TODO use service or timer thread to check for active wifi connection
